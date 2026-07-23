@@ -1,0 +1,153 @@
+/* 设置模块整体 */
+.settings-module {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 15px;
+}
+
+/* 顶部标题条 */
+.page-header.glass-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; }
+
+/* 内容布局 */
+.settings-layout {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.settings-layout::-webkit-scrollbar { width: 4px; }
+.settings-layout::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+/* 设置卡片 */
+.settings-card {
+    width: 100%;
+    padding: 25px 30px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+/* 纯文本标题 */
+.card-text-header {
+    font-size: 17px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 12px;
+}
+
+/* 卡片内容区 */
+.card-body {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* 设置项容器 */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.setting-label {
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+}
+
+/* ========================================================= */
+/* 【核心修改】描边无填充开关 (Border Toggle Switch)         */
+/* ========================================================= */
+
+.border-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    /* 外层完全透明，不填充任何颜色 */
+    background: rgba(255, 255, 255, 0.05); 
+    border: 1px solid rgba(255, 255, 255, 0.3); /* 初始描边 */
+    border-radius: 24px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.border-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* 内部的白色圆点 */
+.border-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background-color: #ffffff; /* 纯白圆点 */
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* 选中状态 (Input:checked) */
+.border-toggle-switch input:checked + .border-slider {
+    transform: translateX(20px);
+}
+.border-toggle-switch:has(input:checked) {
+    border-color: #0284c7; /* 选中后描边变蓝 */
+}
+.border-toggle-switch input:checked + .border-slider {
+    background-color: #0284c7; /* 选中后圆点变蓝 */
+}
+
+/* 悬浮效果 */
+.border-toggle-switch:hover {
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* ========================================================= */
+
+/* 自定义滑块 (无填充样式延续) */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 120px;
+    height: 2px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid rgba(255,255,255,0.5);
+    cursor: pointer;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .settings-card { padding: 20px; }
+    .setting-item { flex-direction: row; gap: 15px; }
+}

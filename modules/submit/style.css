@@ -1,0 +1,139 @@
+/* 投稿模块整体 */
+.submit-module {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 15px;
+}
+
+/* 顶部标题条 */
+.page-header.glass-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; }
+
+/* 内容布局 (三个卡片按顺序纵向排列) */
+.submit-layout {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.submit-layout::-webkit-scrollbar { width: 4px; }
+.submit-layout::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+/* 单个投稿卡片 */
+.submit-card {
+    width: 100%;
+    padding: 25px 30px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+.submit-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.30);
+}
+
+/* 【纯文本标题】 */
+.card-text-header {
+    font-size: 19px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 12px;
+}
+
+/* 卡片内容区 */
+.card-body {
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 16px;
+    line-height: 1.6;
+}
+.info-block { margin-bottom: 20px; }
+.info-block:last-child { margin-bottom: 0; }
+
+/* 纯文本小标题 */
+.info-title {
+    color: #ffffff;
+    font-size: 16px;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+.info-text { margin: 4px 0; }
+.info-text strong { color: #ffffff; }
+
+/* 模板提示 */
+.template-hint {
+    color: rgb(0, 0, 0);
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+/* 【核心修改】模板区：黑色字体，透明度降低 */
+.template-box-black {
+    background: rgba(255, 255, 255, 0.85); /* 白底，略微降透明度 */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.8;
+    /* 纯黑字，透明度降低至 65%，不生硬 */
+    color: rgba(0, 0, 0, 0.65); 
+}
+
+/* 邮箱动作区 */
+.action-area {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.email-hint {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+}
+
+/* 10个纯文本胶囊按钮 (去图标，增强可视度) */
+.email-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.email-text-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    /* 颜色加深：从 0.1 加大到 0.45，形成明显的毛玻璃实块 */
+    background: rgba(255, 255, 255, 0.45); 
+    /* 边框稍微变亮一点，突显轮廓 */
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 30px;
+    color: #000000; /* 纯白文字，确保绝对清晰 */
+    text-decoration: none;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+.email-text-btn:hover {
+    background: rgba(255, 255, 255, 0.7); /* 悬停时变得更白 */
+    border-color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .submit-card { padding: 20px; }
+    .email-text-btn { flex: 1; text-align: center; }
+}

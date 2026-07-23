@@ -1,0 +1,94 @@
+/* 通知模块整体 */
+.notice-module {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 15px;
+}
+
+/* 顶部标题条 (与主页保持一致) */
+.page-header.glass-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; }
+.page-header h2 { font-weight: 600; color: #ffffff; margin: 0; font-size: 18px; }
+
+/* 通知列表滚动容器 */
+.notice-list-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.notice-list-container::-webkit-scrollbar { width: 4px; }
+.notice-list-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+/* 单条通知卡片 (模仿主页卡片，左右撑满) */
+.notice-card {
+    width: 100%;
+    padding: 25px 30px;
+    background: rgba(255, 255, 255, 0.25); /* 较实的玻璃底 */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    cursor: default;
+}
+.notice-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.30);
+}
+
+/* 卡片内部排版 */
+.notice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.notice-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+.notice-date {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+.notice-content {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+}
+
+/* 加载与空状态占位 */
+.loading-placeholder, .empty-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    gap: 10px;
+    font-size: 15px;
+}
+.loading-placeholder i { font-size: 24px; }
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .notice-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .notice-title { font-size: 16px; }
+}

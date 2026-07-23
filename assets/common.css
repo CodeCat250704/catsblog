@@ -1,0 +1,149 @@
+/* 重置基础 */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+body { overflow: hidden; height: 100vh; color: #ffffff; }
+
+/* 【深色背景】微光深邃夜空，凸显液态玻璃 */
+.background-layer {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    /* 使用 cover 让图片自适应屏幕大小，不拉伸；center center 居中显示 */
+    background: url('../background.jpeg') no-repeat center center / cover;
+    z-index: -2;
+}
+
+/* 扁平布局容器 */
+#app-container {
+    display: flex; gap: 20px; padding: 20px; height: 100vh;
+}
+
+/* 【核心液态玻璃样式】完全按照您的参数要求 */
+.glass-panel {
+    /* 极低透明底，几乎透明 */
+    background: rgba(255, 255, 255, 0.02); 
+    /* 高强度磨砂模糊背景 */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    /* 高亮白边 */
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    /* 阴影挤出厚度感 (外阴影 + 内部微光) */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    /* 14px 大圆角，凝成水滴 */
+    border-radius: 14px;
+    transition: box-shadow 0.3s ease;
+}
+
+/* 左侧导航 (深色背景下的文字适配) */
+#sidebar {
+    width: 90px; display: flex; flex-direction: column; align-items: center;
+    padding: 20px 0; flex-shrink: 0; height: 100%;
+}
+.brand { font-size: 24px; margin-bottom: 30px; color: #ffffff; }
+.nav-links { list-style: none; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.nav-links li {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer; color: rgba(255, 255, 255, 0.8); font-size: 12px; transition: all 0.2s;
+    white-space: nowrap;
+}
+.nav-links li i { font-size: 20px; transition: transform 0.2s; }
+.nav-links li.active { color: #ffffff; font-weight: bold; }
+.nav-links li:hover { color: #ffffff; transform: translateY(-1px); }
+.nav-links li:hover i { transform: scale(1.05); }
+
+/* 底部设置 */
+.settings-wrapper { margin-top: auto; margin-bottom: 5px; }
+#settings-btn {
+    background: transparent; border: none; cursor: pointer; color: rgba(255, 255, 255, 0.8);
+    font-size: 22px; transition: all 0.3s;
+}
+#settings-btn:hover { color: #ffffff; transform: rotate(90deg); }
+
+/* 右侧内容区 (去除外层毛玻璃效果，变成全透明无边框容器) */
+.content-area {
+    flex: 1; min-width: 0; height: 100%; position: relative;
+    padding: 30px; overflow-x: hidden; overflow-y: auto;
+    /* 移除所有玻璃特性、边框和阴影，变为透明底 */
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+.content-area::-webkit-scrollbar { width: 6px; }
+.content-area::-webkit-scrollbar-track { background: transparent; }
+.content-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+
+/* ==========================================================
+ * 自定义右键菜单 + Toast 提示 样式
+ * ========================================================== */
+
+/* 右键菜单容器 */
+.context-menu-glass {
+    position: fixed;
+    width: 160px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    padding: 6px 0;
+    z-index: 9999;
+    display: none;
+    transform-origin: top left;
+    animation: menuPop 0.15s ease-out;
+}
+
+@keyframes menuPop {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* 菜单项 */
+.menu-item {
+    padding: 10px 16px;
+    font-size: 14px;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.2s ease;
+}
+.menu-item i {
+    width: 18px;
+    text-align: center;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.8);
+}
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 菜单分割线 */
+.menu-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 4px 10px;
+}
+
+/* 全局轻提示 (Toast) */
+.glass-toast {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    z-index: 99999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}

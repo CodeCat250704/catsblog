@@ -1,0 +1,24 @@
+{
+  "announcements": [
+    "2026.07.23 - 毛玻璃正式上线",
+    "2026.07.23 - 测试上线"
+  ],
+  "music": [
+    "The King.mp3",
+    "wasted.mp3"
+  ],
+
+   "favorites": [
+    { "id": "1", "title": "测试1", "subtitle": "测试副标1", "category": "测试框架1", "date": "2026-07-23" },
+    { "id": "5", "title": "测试5", "subtitle": "测试副标5", "category": "测试框架2", "date": "2026-07-23" }
+  ],
+
+  "posts": [
+    { "id": "1", "title": "测试1", "subtitle": "测试副标1", "category": "测试框架1", "date": "2026-07-23" },
+    { "title": "我的第一篇博客", "subtitle": "测试", "category": "测试","date": "2026-07-23" },
+    { "id": "2", "title": "测试2", "subtitle": "测试副标2", "category": "测试框架1", "date": "2026-07-23" },
+    { "id": "3", "title": "测试3", "subtitle": "测试副标3", "category": "测试框架2", "date": "2026-07-23" },
+    { "id": "4", "title": "测试4", "subtitle": "测试副标4", "category": "测试框架2", "date": "2026-07-23" },
+    { "id": "5", "title": "测试5", "subtitle": "测试副标5", "category": "测试框架2", "date": "2026-07-23" }
+  ]
+}

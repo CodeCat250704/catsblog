@@ -1,0 +1,164 @@
+/* 收藏模块整体 */
+.collection-module {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 15px;
+}
+
+/* 顶部标题条 */
+.page-header.glass-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 25px;
+    flex-shrink: 0;
+}
+.page-header h2 { font-weight: 600; color: #ffffff; margin: 0; font-size: 18px; }
+.page-header span { font-size: 13px; color: rgba(255,255,255,0.6); }
+
+/* --- 三栏主容器 --- */
+.three-column-layout {
+    flex: 1;
+    display: flex;
+    padding: 15px;
+    gap: 10px;
+    min-height: 0;
+}
+
+/* 
+ * 布局设定：
+ * 左侧 12%, 中间 9%-min 110px, 右侧撑满
+ */
+.col-category-switch, .col-article-list {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding-right: 8px;
+    flex-shrink: 0;
+}
+.col-category-switch { width: 12%; min-width: 80px; }
+.col-article-list { flex-basis: 9%; min-width: 110px; max-width: 150px; }
+.col-reading-area { flex: 1; display: flex; flex-direction: column; }
+
+/* 标题通用样式 */
+.col-title {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    margin-bottom: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* 滚动列表容器 */
+.scroll-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 5px;
+}
+.scroll-list::-webkit-scrollbar { width: 3px; }
+.scroll-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+/* 共同的卡片基础样式 */
+.category-btn, .article-item {
+    padding: 8px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.25); /* 细白边框 */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.02); /* 极低底色 */
+    overflow: hidden;
+}
+
+/* 分类按钮特定样式 (横向对齐图标) */
+.category-btn {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    white-space: nowrap;
+}
+.category-btn i { font-size: 13px; flex-shrink: 0; }
+
+/* 文章列表项特定样式 */
+.article-item .title { color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.article-item .subtitle { color: rgba(255,255,255,0.4); font-size: 11px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+
+/* 悬浮状态：微亮边框，稍微提亮 */
+.category-btn:hover, .article-item:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* 【选中状态】填充半透明白色，透明度降低，边框更亮 */
+.category-btn.active, .article-item.active {
+    background: rgba(255, 255, 255, 0.20); /* 填充半透明白色 */
+    border-color: rgba(255, 255, 255, 0.8); /* 边框高亮 */
+    color: #ffffff;
+}
+.article-item.active .title { color: #ffffff; }
+.article-item.active .subtitle { color: rgba(255, 255, 255, 0.6); }
+
+/* --- 右侧阅读区 (适配您手动修改的 0.55 黑灰风格) --- */
+.reading-content {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.55); /* 变实 */
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+}
+
+.empty-preview h1 {
+    font-size: 40px;
+    color: rgb(0, 0, 0);
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+.empty-preview p {
+    font-size: 15px;
+    color: rgb(97, 94, 94);
+}
+
+/* 有文章时的样式 */
+.reading-article h1 {
+    font-size: 36px;
+    color: #000000;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+.reading-article .meta-data {
+    color: rgb(88, 88, 88);
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+.reading-article .body-preview {
+    text-align: left;
+    color: rgb(0, 0, 0);
+    line-height: 1.8;
+    font-size: 16px;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .three-column-layout { flex-direction: column; overflow-y: auto; height: auto; }
+    .col-category-switch, .col-article-list { 
+        width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; 
+        min-height: 60px; max-height: 150px;
+    }
+    .col-reading-area { min-height: 300px; margin-top: 10px; }
+}

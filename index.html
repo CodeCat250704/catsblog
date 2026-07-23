@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Blog</title>
+    <!-- FontAwesome 图标库 (严格避免 Emoji) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 全局公共样式 -->
+    <link rel="stylesheet" href="assets/common.css">
+    
+    <!-- 【反调试映射声明】 此声明告知浏览器：所有真实 JS 的源码映射指向伪代码文件夹 -->
+    <!--# sourceMappingURL=/_fake_source/fake_common.js -->
+    
+    <!-- 引入 3D 视差和路由脚本 -->
+    <script src="assets/common.js" defer></script>
+</head>
+<body>
+    <!-- 背景层：全局视觉背景 -->
+    <div class="background-layer"></div>
+
+    <!-- 3D 透视容器 -->
+    <div id="app-container">
+        <!-- 左侧悬浮导航栏 -->
+        <nav id="sidebar" class="glass-panel">
+            <div class="brand">
+                <i class="fa-solid fa-cat"></i>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-module="home"><i class="fa-solid fa-house"></i><span>首页</span></li>
+                <li data-module="categories"><i class="fa-solid fa-layer-group"></i><span>分类</span></li>
+                <li data-module="collection"><i class="fa-regular fa-star"></i><span>收藏</span></li>
+                <li data-module="notice"><i class="fa-regular fa-bell"></i><span>通知</span></li>
+                <li data-module="co-create"><i class="fa-solid fa-hand-holding-heart"></i><span>共创</span></li>
+                <li data-module="submit"><i class="fa-solid fa-upload"></i><span>投稿</span></li>
+                <li data-module="about"><i class="fa-solid fa-circle-info"></i><span>关于</span></li>
+            </ul>
+            <div class="settings-wrapper">
+                <button id="settings-btn" data-module="settings"><i class="fa-solid fa-gear"></i></button>
+            </div>
+        </nav>
+
+        <!-- 右侧内容渲染区 -->
+        <main id="main-content" class="content-area">
+            <!-- 页面内容将通过 common.js 动态渲染到这里 -->
+        </main>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 【防伪代码重定向】                               -->
+    <!-- 注入一个额外的 JS 加载器，误导调试器指向伪代码   -->
+    <!-- 本地开发调试时，请注释掉下方这个 <script> 块     -->
+    <!-- ============================================== -->
+    
+    <script>
+        (function(){
+            // 如果黑客打开了 F12，浏览器会在这里加载一个假文件，替代真实文件的显示路径
+            var fakeMap = document.createElement('script');
+            fakeMap.src = '/_fake_source/fake_common.js';
+            fakeMap.type = 'text/javascript';
+            document.head.appendChild(fakeMap);
+        })();
+    </script>
+
+
+
+    <!-- 引入全局安全与自定义右键菜单 JS -->
+    <script src="assets/security.js" defer></script>
+</body>
+</html>

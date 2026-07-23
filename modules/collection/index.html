@@ -1,0 +1,38 @@
+<div class="collection-module">
+    <!-- 顶部标题条 -->
+    <div class="page-header glass-panel">
+        <h2>收藏</h2>
+        <span></span>
+    </div>
+
+    <!-- 三栏主容器 -->
+    <div class="three-column-layout glass-panel">
+        
+        <!-- 1. 最左侧列：收藏分类概览 -->
+        <div class="col-category-switch">
+            <div class="col-title">按类型筛选</div>
+            <div id="collection-filter-list" class="scroll-list">
+                <!-- JS 动态渲染：全部、前端、后端等 -->
+            </div>
+        </div>
+
+        <!-- 2. 中间列：同级收藏文章列表 -->
+        <div class="col-article-list">
+            <div class="col-title">收藏文章</div>
+            <div id="collection-article-list" class="scroll-list">
+                <!-- JS 动态渲染收藏的文章 -->
+            </div>
+        </div>
+
+        <!-- 3. 右侧大区域：阅读文章预览 -->
+        <div class="col-reading-area">
+            <div class="reading-content" id="collection-reading-content">
+                <!-- JS 动态渲染文章预览 -->
+                <div class="empty-preview">
+                    <h1>阅读文章区域</h1>
+                    <p>请从左侧选择收藏的文章以开始阅读</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

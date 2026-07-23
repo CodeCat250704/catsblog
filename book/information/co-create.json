@@ -1,0 +1,10 @@
+[
+    {
+        "id": "1",
+        "title": "Cat Blog开发",
+        "article_provider": "Cat,Gqun,DeepSeek",
+        "co_creator": "Cat,Gqun,DeepSeek",
+        "image_provider": "Baidu",
+        "description": "感谢以上2位伙伴的共同努力,DeepSeek的大力支持。在这个项目中，DeepSeek负责了所有前端 JavaScript 交互，Cat和Gqun完成了核心 CSS 毛玻璃特效，Baidu提供了高质量的自然风景背景图。"
+    }
+]

@@ -1,0 +1,75 @@
+/* 关于模块整体 */
+.about-module {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 15px;
+}
+
+/* 顶部标题条 */
+.page-header.glass-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; }
+
+/* 内容布局 (三个卡片纵向排列) */
+.about-layout {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.about-layout::-webkit-scrollbar { width: 4px; }
+.about-layout::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+/* 关于卡片 */
+.about-card {
+    width: 100%;
+    padding: 25px 30px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+.about-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.30);
+}
+
+/* 纯文本标题 */
+.card-text-header {
+    font-size: 19px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 12px;
+}
+
+/* 卡片内容区 */
+.card-body {
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 16px;
+    line-height: 1.8;
+}
+.card-body strong {
+    color: #000000;
+}
+.info-text {
+    margin: 4px 0;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .about-card { padding: 20px; }
+}

@@ -1,0 +1,123 @@
+/* 共创模块整体 */
+.co-create-module {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 15px;
+}
+
+/* 顶部标题条 */
+.page-header.glass-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; }
+.page-header h2 { font-weight: 600; color: #ffffff; margin: 0; font-size: 18px; }
+
+/* 列表滚动容器 */
+.co-create-list-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.co-create-list-container::-webkit-scrollbar { width: 4px; }
+.co-create-list-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+/* 单条共创名片 (仿主页/通知结构) */
+.co-create-card {
+    width: 100%;
+    padding: 25px 30px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+.co-create-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.30);
+}
+
+/* 名片顶部：项目/文章标题 */
+.co-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+.co-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+/* 名片主体：三列布局 (像三个并列的名片栏) */
+.co-body-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* 单个创作者信息块 */
+.co-person {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+}
+.co-person .role {
+    font-size: 16px;
+    color: rgb(198, 208, 216);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+.co-person .name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+/* 描述文案 */
+.co-description {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.8);
+    line-height: 1.6;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px 15px;
+    border-radius: 8px;
+}
+
+/* 加载与空状态占位 */
+.loading-placeholder, .empty-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    gap: 10px;
+    font-size: 15px;
+}
+.loading-placeholder i { font-size: 24px; }
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .co-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .co-body-grid { grid-template-columns: 1fr; } /* 在手机上变为纵向排列 */
+    .co-create-card { padding: 20px; }
+}
