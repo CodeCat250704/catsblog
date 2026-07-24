@@ -1,127 +1,294 @@
-/* 轮播图样式 */
-.hero-carousel {
-    position: relative; 
-    padding: 30px; 
-    margin-bottom: 25px; 
-    min-height: 300px;
-    overflow: hidden; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-}
-.carousel-track-container { 
-    width: 100%; 
-    height: 100%; 
-    overflow: hidden;
- }
-.carousel-track { 
-    display: flex; 
-    list-style: none; 
-    transition: transform 0.5s ease-in-out;
- }
-.carousel-slide { min-width: 100%; min-height: 250px; display: flex; align-items: center; justify-content: center; }
-.slide-content { display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 0 40px; }
-.slide-text { flex: 1; }
-.slide-text h2 { font-weight: 500; margin-bottom: 8px; color: #ffffff; }
-.slide-text p { color: rgba(255, 255, 255, 0.8); }
-.slide-image { 
-    width: 200px; height: 150px; background: rgba(255,255,255,0.08); border-radius: 12px; 
-    display: flex; align-items: center; justify-content: center; 
-    border: 1px dashed rgba(255,255,255,0.4); color: rgba(255,255,255,0.6); 
+/* ==========================================================
+ * 首页 (Home) 专属样式表 - 完整重构版
+ * ========================================================== */
+
+/* --- 首页根布局 --- */
+.home-module {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 20px;
 }
 
-.carousel-btn {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50%; width: 40px; height: 40px;
-    cursor: pointer; transition: 0.2s; color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+/* --- 顶部标题条 --- */
+.page-header.glass-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    flex-shrink: 0;
+    border-radius: 14px;
 }
-.carousel-btn:hover { background: rgba(255, 255, 255, 0.4); }
+.page-header h2 { 
+    font-weight: 600; 
+    color: #ffffff; 
+    margin: 0; 
+    font-size: 18px; 
+    letter-spacing: 0.5px;
+}
+.page-header span { 
+    font-size: 13px; 
+    color: rgba(255,255,255,0.6); 
+}
+
+/* ==========================================================
+ * 【轮播图区域】 - 支持背景图与悬浮文字
+ * ========================================================== */
+.hero-carousel {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 320px;
+    padding: 0;
+    border-radius: 14px;
+}
+.carousel-track-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.carousel-track {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 轮播图单个卡片项 */
+.carousel-slide {
+    position: relative;
+    min-width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+/* 全屏背景图 (带微缩放视差) */
+.slide-bg {
+    position: absolute;
+    top: -20px; left: -20px; right: -20px; bottom: -20px;
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.1);
+    z-index: 1;
+    filter: brightness(0.65) blur(1px); /* 压暗并稍微模糊，保证文字清晰 */
+    transition: transform 0.8s ease;
+}
+.carousel-slide:hover .slide-bg {
+    transform: scale(1.15); /* 鼠标悬停时封面微微放大，增加互动感 */
+}
+
+/* 轮播图文字叠加层 */
+.slide-content-overlay {
+    position: relative;
+    z-index: 2;
+    padding: 0 50px;
+    width: 100%;
+    color: #ffffff;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+.slide-content-overlay h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+.slide-content-overlay p {
+    font-size: 18px;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* 轮播控制箭头 */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #ffffff;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.carousel-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: #ffffff;
+}
 .carousel-btn.prev { left: 15px; }
 .carousel-btn.next { right: 15px; }
+.carousel-btn i { font-size: 16px; }
 
+/* 底部指示点 */
 .carousel-indicators {
-    position: absolute; bottom: 15px; display: flex; gap: 10px;
+    position: absolute;
+    bottom: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 3;
 }
 .indicator {
-    width: 8px; height: 8px; border-radius: 50%; border: none; 
-    background: rgba(255,255,255,0.4); cursor: pointer; transition: 0.2s;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
-.indicator.active { background: #ffffff; width: 16px; border-radius: 6px; }
+.indicator.active {
+    background: #ffffff;
+    width: 24px;
+    border-radius: 6px;
+}
 
-/* 三列卡片布局 */
+/* ==========================================================
+ * 【底部三列卡片网格】
+ * ========================================================== */
 .three-col-grid { 
     display: grid; 
     grid-template-columns: repeat(3, 1fr); 
     gap: 20px; 
-    height: 440px; 
+    flex: 1; /* 撑满剩余高度 */
+    min-height: 0; /* 防止溢出 */
 }
-.card { padding: 0; overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; }
-.card:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); }
-.card-header {
-    background: rgba(255, 255, 255, 0.1); 
-    backdrop-filter: blur(4px);
-    padding: 15px 20px;
-    font-weight: 500; 
-    color: #ffffff; 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-.card-body { 
-    padding: 20px; 
-    flex: 1; overflow-y: auto; 
-    color: rgba(255, 255, 255, 0.8); 
-    font-size: 16px }
-.music-item { 
-    padding: 6px 0; 
-    border-bottom: 1px solid rgba(255,255,255,0.1); 
-    cursor: pointer; display: 
-    flex; align-items: center; 
-    gap: 8px;}
-.music-item:hover { 
-    color: #ffffff;
- }
 
-/* 响应式适配 */
-@media (max-width: 992px) {
-    .three-col-grid { grid-template-columns: 1fr 1fr; height: auto; }
-    .three-col-grid .card:last-child { grid-column: span 2; }
+/* 通用卡片结构 */
+.card { 
+    padding: 0; 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    transition: all 0.3s ease; 
+    border-radius: 14px;
 }
-@media (max-width: 650px) {
-    #app-container { padding: 10px; gap: 10px; }
-    .three-col-grid { grid-template-columns: 1fr; }
-    .three-col-grid .card:last-child { grid-column: span 1; }
+.card:hover { 
+    transform: translateY(-4px); 
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25); 
 }
+
+/* 卡片头部标题 */
+.card-header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 12px 20px;
+    font-weight: 600;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
+}
+
+/* 卡片内容区 (自适应高度与滚动) */
+.card-body {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    line-height: 1.6;
+}
+.card-body::-webkit-scrollbar { width: 4px; }
+.card-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+/* 历史列表 */
+#historyList li {
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+#historyList li:last-child { border-bottom: none; }
 
 /* ==========================================================
- * 音乐播放器增强样式
+ * 【音乐播放器内置 CSS】
+ * 适配全功能播放器的深色毛玻璃控制条
  * ========================================================== */
-
-/* 音乐列表项 */
-#music-file-list .music-item {
-    padding: 8px 12px;
-    margin-bottom: 4px;
-    border-radius: 8px;
+.music-item {
+    padding: 6px 10px;
+    margin: 2px 0;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    color: rgba(255,255,255,0.7);
 }
-#music-file-list .music-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateX(4px);
-}
-#music-file-list .music-item.active-playing {
-    background: rgba(255, 255, 255, 0.25);
+.music-item:hover {
+    background: rgba(255,255,255,0.08);
     color: #ffffff;
-    box-shadow: 0 0 10px rgba(255,255,255,0.05);
+}
+.music-item-active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-radius: 6px;
 }
 
-/* 音量滑块样式定制 (适配 Webkit 浏览器) */
-input[type="range"]#volume-slider::-webkit-slider-thumb {
+/* 进度条与滑块自定义 */
+input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 3px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -4.5px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
     background: #ffffff;
-    cursor: pointer;
     box-shadow: 0 0 8px rgba(255,255,255,0.3);
+}
+
+/* ==========================================================
+ * 【响应式适配】
+ * 平板与手机模式下轮播变小，网格变成双列或单列
+ * ========================================================== */
+@media (max-width: 1024px) {
+    .hero-carousel { height: 260px; }
+    .slide-content-overlay h2 { font-size: 28px; }
+}
+
+@media (max-width: 768px) {
+    .home-module { gap: 15px; }
+    .hero-carousel { height: 200px; }
+    .slide-content-overlay { padding: 0 30px; }
+    .slide-content-overlay h2 { font-size: 22px; }
+    .slide-content-overlay p { font-size: 14px; }
+    
+    .three-col-grid { 
+        grid-template-columns: 1fr 1fr; 
+        gap: 15px;
+        height: auto; 
+    }
+    .three-col-grid .card:last-child { grid-column: span 2; }
+    .carousel-btn { width: 32px; height: 32px; }
+    .carousel-btn.prev { left: 10px; }
+    .carousel-btn.next { right: 10px; }
+}
+
+@media (max-width: 480px) {
+    .page-header { flex-direction: column; align-items: flex-start; gap: 5px; padding: 12px 16px; }
+    .three-col-grid { grid-template-columns: 1fr; }
+    .three-col-grid .card:last-child { grid-column: span 1; }
 }

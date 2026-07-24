@@ -114,17 +114,23 @@
     }
 
     // 渲染右侧阅读区
+    // 替换收藏里的渲染阅读区函数
     function renderReadingArea(item) {
         const iconClass = iconMap[item.category] || "fa-regular fa-folder";
         readingContent.innerHTML = `
-            <div class="reading-article">
-                <h1>${item.title}</h1>
-                <div class="meta-data">
-                    <i class="${iconClass}"></i> ${item.category} &nbsp;·&nbsp; ${item.date}
+            <div style="width: 100%; padding: 0 40px; box-sizing: border-box; text-align: left;">
+                <!-- 文章大标题 -->
+                <h1 style="font-size: 34px; font-weight: 600; color: #ffffff; margin-bottom: 10px; letter-spacing: 1px;">${item.title}</h1>
+                
+                <!-- 元数据信息 -->
+                <div style="font-size: 14px; color: rgba(255, 255, 255, 0.5); padding-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 25px; display: flex; gap: 15px;">
+                    <span><i class="${iconClass}" style="margin-right: 6px;"></i> ${item.category}</span>
+                    <span><i class="fa-regular fa-calendar" style="margin-right: 6px;"></i> ${item.date}</span>
                 </div>
-                <div class="body-preview">
-                    <p>${item.subtitle || '收藏的这篇文章，后续可以在此处渲染真实的内容。'}</p>
-                    <p style="margin-top: 20px; color: rgba(255,255,255,0.4); font-size: 13px;">已添加到您的收藏夹</p>
+
+                <!-- 文章正文内容 (舒适行距排版) -->
+                <div class="article-body" style="font-size: 17px; line-height: 1.8; color: rgba(255, 255, 255, 0.9);">
+                    <p>${item.subtitle || '您收藏的这篇文章，当前通过排版引擎为您呈现左对齐的阅读视图。'}</p>
                 </div>
             </div>
         `;
