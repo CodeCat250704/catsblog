@@ -1,7 +1,8 @@
 {
   "announcements": [
     "2026.07.23 - 毛玻璃正式上线",
-    "2026.07.23 - 测试上线"
+    "2026.07.23 - 测试上线",
+    "2026.07.24 - 第一篇博客上传——Apple液态玻璃，教程来喽"
   ],
   "music": [
     "The King.mp3",
@@ -11,73 +12,24 @@
 
    "favorites": [
     { 
-      "id": "1", 
-      "title": "测试1", 
-      "subtitle": "测试副标1", 
-      "category": "测试框架1", 
-      "date": "2026-07-23" 
-    },
-
-    { "id": "5", 
-    "title": "测试5", 
-    "subtitle": "测试副标5", 
-    "category": "测试框架2", 
-    "date": "2026-07-23" 
+    "id": "1", 
+    "title": "Apple液态玻璃，教程来喽",
+    "subtitle": "关于Apple液态玻璃效果的web前端实现",
+    "category": "Web前端",
+    "date": "2026-07-24",
+    "cover": "cover.jpg" 
     }
 
   ],
 
   "posts": [
     { 
-      "id": "1", 
-      "title": "测试1", 
-      "subtitle": "测试副标1", 
-      "category": "测试框架1", 
-      "date": "2026-07-23",
-      "folder": "1", 
-      "cover": "cover.jpg" 
-    },
-
-    { 
-      "id": "6", 
-     "title": "我的第一篇博客", 
-      "subtitle": "测试", 
-      "category": "测试",
-      "date": "2026-07-23",
-      "folder": "1", 
-      "cover": "cover.jpg" 
-    },
-
-    { 
-      "id": "2", 
-      "title": "测试2", 
-      "subtitle": "测试副标2", 
-      "category": "测试框架1", 
-      "date": "2026-07-23"
-    },
-
-    { 
-      "id": "3", 
-      "title": "测试3", 
-      "subtitle": "测试副标3", 
-      "category": "测试框架2", 
-      "date": "2026-07-23" 
-    },
-
-    { 
-      "id": "4", 
-      "title": "测试4", 
-      "subtitle": "测试副标4", 
-      "category": "测试框架2", 
-      "date": "2026-07-23" 
-    },
-
-    { 
-      "id": "5", 
-      "title": "测试5", 
-      "subtitle": "测试副标5", 
-      "category": "测试框架2", 
-      "date": "2026-07-23" 
+    "id": "1", 
+    "title": "Apple液态玻璃，教程来喽",
+    "subtitle": "关于Apple液态玻璃效果的web前端实现",
+    "category": "Web前端",
+    "date": "2026-07-24",
+    "cover": "cover.jpg" 
     }
 
   ]
