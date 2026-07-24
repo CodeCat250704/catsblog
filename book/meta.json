@@ -17,7 +17,8 @@
     "subtitle": "关于Apple液态玻璃效果的web前端实现",
     "category": "Web前端",
     "date": "2026-07-24",
-    "cover": "cover.jpg" 
+    "cover": "cover.jpg",
+    "mdPath": "/book/home/1/md/content.md" 
     }
 
   ],
@@ -29,7 +30,8 @@
     "subtitle": "关于Apple液态玻璃效果的web前端实现",
     "category": "Web前端",
     "date": "2026-07-24",
-    "cover": "cover.jpg" 
+    "cover": "cover.jpg" ,
+    "mdPath": "/book/home/1/md/content.md" 
     }
 
   ]
