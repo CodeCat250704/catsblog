@@ -2,18 +2,16 @@
     <!-- 顶部标题 -->
     <div class="page-header glass-panel" style="padding: 15px 30px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
         <h2 style="font-weight: 600; color: #ffffff;">Cat Blog</h2>
-        <span style="font-size: 14px; color: rgba(255,255,255,0.7);">新一代博客</span>
+        <span style="font-size: 14px; color: rgba(255,255,255,0.7);"></span>
     </div>
 
     <!-- 轮播图区域 -->
     <div class="hero-carousel glass-panel" id="heroCarousel">
         <button class="carousel-btn prev"><i class="fa-solid fa-chevron-left"></i></button>
         <div class="carousel-track-container">
-            <!-- 将由 JS 动态渲染 <ul class="carousel-track"> -->
             <ul class="carousel-track" id="carouselTrack"></ul>
         </div>
         <button class="carousel-btn next"><i class="fa-solid fa-chevron-right"></i></button>
-        <!-- 将由 JS 动态渲染指示点 -->
         <div class="carousel-indicators" id="carouselIndicators"></div>
     </div>
 
@@ -34,7 +32,9 @@
         <!-- 音乐列表 -->
         <div class="card glass-panel">
             <div class="card-header">音乐列表</div>
-            <div class="card-body" id="musicList"></div>
+            <div class="card-body" id="musicListContainer">
+                <!-- JS 将在这里动态渲染音乐列表和播放器 -->
+            </div>
         </div>
     </div>
 </div>

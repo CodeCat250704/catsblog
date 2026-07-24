@@ -91,3 +91,37 @@
     .three-col-grid { grid-template-columns: 1fr; }
     .three-col-grid .card:last-child { grid-column: span 1; }
 }
+
+/* ==========================================================
+ * 音乐播放器增强样式
+ * ========================================================== */
+
+/* 音乐列表项 */
+#music-file-list .music-item {
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+#music-file-list .music-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(4px);
+}
+#music-file-list .music-item.active-playing {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(255,255,255,0.05);
+}
+
+/* 音量滑块样式定制 (适配 Webkit 浏览器) */
+input[type="range"]#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(255,255,255,0.3);
+}
