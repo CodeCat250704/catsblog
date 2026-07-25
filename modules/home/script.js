@@ -339,7 +339,7 @@
             }
         };
 
-                // ------ 杜比全景声空间音频引擎 (多声场模拟) ------
+                // ------ 杜比全景声空间音频引擎 (静态声场包围版：绝不晃动) ------
         let audioCtx = null;
         let source = null;
         let bassFilter = null; // 主重低音
@@ -353,16 +353,16 @@
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 source = audioCtx.createMediaElementSource(audioPlayer);
                 
-                // 1. 初始化主低音炮 (Bass Filter)
+                // 1. 主低音炮 (电影级超低频)
                 bassFilter = audioCtx.createBiquadFilter();
                 bassFilter.type = 'lowshelf';
-                bassFilter.frequency.value = 80; // 主超低频发挥区域
+                bassFilter.frequency.value = 80; 
                 bassFilter.gain.value = 0;
 
-                // 2. 初始化空间混响 (模拟影院大厅包围感)
+                // 2. 空间混响 (模拟影院的广阔空间感，让声音有厚度)
                 roomReverb = audioCtx.createConvolver();
                 const sr = audioCtx.sampleRate;
-                const len = sr * 1.5; // 1.5秒的混响尾音
+                const len = sr * 1.5; // 1.5秒的室内残响
                 const buffer = audioCtx.createBuffer(2, len, sr);
                 const lData = buffer.getChannelData(0);
                 const rData = buffer.getChannelData(1);
@@ -370,37 +370,30 @@
                     const decay = Math.exp(-i / (sr * 0.4));
                     const noise = (Math.random() * 2 - 1) * decay;
                     lData[i] = noise * 0.6;
-                    rData[i] = noise * 0.8; // 模拟左右不对称的房间散射
+                    rData[i] = noise * 0.8; // 制造左右声场不均匀的真实房间散射感
                 }
                 roomReverb.buffer = buffer;
 
-                // 3. 初始化天空声道 (Atmos/Z轴 - 模拟声音从头顶压下)
+                // 3. 天空声道 (模拟天花板上压下来的重低音)
                 atmosPanner = audioCtx.createPanner();
-                atmosPanner.panningModel = 'HRTF'; // 开启双耳空间算法
+                atmosPanner.panningModel = 'HRTF';
                 atmosPanner.distanceModel = 'inverse';
                 atmosPanner.refDistance = 0.5;
                 atmosPanner.rolloffFactor = 1.5;
-                atmosPanner.setPosition(0, -2.5, 0); // Y轴负值代表头顶上方
 
-                // 4. 初始化双低音炮 (模拟前后放置的两个低音炮产生的低频漫射)
+                // 4. 前置与后置低音炮
                 subwooferFront = audioCtx.createPanner();
                 subwooferFront.panningModel = 'equalpower';
-                subwooferFront.setPosition(0, 0, 1.5); // 皇帝位前方
-
                 subwooferRear = audioCtx.createPanner();
                 subwooferRear.panningModel = 'equalpower';
-                subwooferRear.setPosition(0, 0, -1.5); // 皇帝位后方
 
-                // 5. 节点连接链路：主音源 -> 低音滤波 -> 分流到天空声道和地面声道 -> 混响 -> 输出
+                // 5. 节点连接链路
                 source.connect(bassFilter);
-                
-                // 分线处理，模拟多音箱同时发声
                 bassFilter.connect(atmosPanner);
                 bassFilter.connect(subwooferFront);
                 bassFilter.connect(subwooferRear);
                 bassFilter.connect(roomReverb);
 
-                // 最终汇入总输出
                 atmosPanner.connect(audioCtx.destination);
                 subwooferFront.connect(audioCtx.destination);
                 subwooferRear.connect(audioCtx.destination);
@@ -408,6 +401,47 @@
             }
             if (audioCtx.state === 'suspended') audioCtx.resume();
         }
+
+        // 重低音按钮
+        eqBass.onclick = function() {
+            setupAudioEffects();
+            isEqBassActive = !isEqBassActive;
+            // 拉开低频增益，模拟底噪震颤
+            bassFilter.gain.value = isEqBassActive ? 16 : 0; 
+            this.classList.toggle('active');
+        };
+
+        // 杜比全景声按钮 (静止下压，绝无晃动)
+        eqAtmos.onclick = function() {
+            setupAudioEffects();
+            isEqAtmosActive = !isEqAtmosActive;
+            this.classList.toggle('active');
+
+            if (isEqAtmosActive) {
+                // === 【核心修改】：放弃旋转动画，改成【静态广阔声场】 ===
+                // 根据您的需求，我们固定摆放位置，绝不产生平移飘忽感
+                
+                // 1. 地面声道 (前置22°-30°、后置90°-110°)
+                subwooferFront.setPosition(0.4, 0, 2.0);   // 声音在正前方偏右一点
+                subwooferRear.setPosition(-0.4, 0, -2.0);  // 声音在正后方偏左一点
+
+                // 2. 天空声道 (头顶45°-55°位置，产生下压感)
+                atmosPanner.setPosition(0, -2.8, 0);      // Y轴负值代表头顶上方2.8米
+
+                // 3. 增强低频的“大房间”震撼错觉
+                bassFilter.gain.value = 12; // 全景声自带重低音增强
+
+                // 浮动反馈
+                console.log("杜比全景声开启：静态环绕 + 天空下压");
+            } else {
+                // 关闭后，将所有声源位置归零，还原为标准立体声
+                if (subwooferFront) subwooferFront.setPosition(0, 0, 0);
+                if (subwooferRear) subwooferRear.setPosition(0, 0, 0);
+                if (atmosPanner) atmosPanner.setPosition(0, 0, 0);
+                if (!isEqBassActive) bassFilter.gain.value = 0;
+                console.log("杜比全景声关闭");
+            }
+        };
 
         // 重低音按钮
         eqBass.onclick = function() {
