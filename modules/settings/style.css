@@ -1,4 +1,7 @@
-/* 设置模块整体 */
+/* ==========================================================
+ * 设置模块样式 - 完美适配深色模式
+ * ========================================================== */
+
 .settings-module {
     display: flex;
     flex-direction: column;
@@ -6,17 +9,27 @@
     gap: 15px;
 }
 
-/* 顶部标题条 */
+/* 顶部标题条 (使用 CSS 变量继承全局色) */
 .page-header.glass-panel {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 25px;
     flex-shrink: 0;
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
-.header-left { display: flex; align-items: center; }
+.settings-main-title {
+    font-weight: 600;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+.settings-sub-title {
+    font-size: 13px;
+    opacity: 0.7;
+    transition: color 0.3s ease;
+}
 
-/* 内容布局 */
+/* 布局容器 */
 .settings-layout {
     flex: 1;
     overflow-y: auto;
@@ -28,34 +41,26 @@
 .settings-layout::-webkit-scrollbar { width: 4px; }
 .settings-layout::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
-/* 设置卡片 */
+/* 卡片容器 */
 .settings-card {
     width: 100%;
     padding: 25px 30px;
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 14px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
+    transition: all 0.3s ease, background 0.3s ease;
 }
 
 /* 纯文本标题 */
 .card-text-header {
     font-size: 17px;
     font-weight: 600;
-    color: #ffffff;
     margin-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     padding-bottom: 12px;
-}
-
-/* 卡片内容区 */
-.card-body {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 14px;
-    line-height: 1.8;
+    transition: color 0.3s ease, border-color 0.3s ease;
 }
 
 /* 设置项容器 */
@@ -63,71 +68,75 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 8px 0;
+}
+.setting-item:last-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    margin-top: 5px;
 }
 .setting-label {
     display: flex;
     align-items: center;
-    color: #ffffff;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+.setting-label i { width: 20px; text-align: center; font-size: 16px; }
+
+.range-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.range-label {
+    font-size: 12px;
+    opacity: 0.6;
+    transition: color 0.3s ease;
 }
 
-/* ========================================================= */
-/* 【核心修改】描边无填充开关 (Border Toggle Switch)         */
-/* ========================================================= */
-
+/* ==========================================================
+ * 【描边无填充开关】
+ * ========================================================== */
 .border-toggle-switch {
     position: relative;
     display: inline-block;
     width: 44px;
     height: 24px;
-    /* 外层完全透明，不填充任何颜色 */
-    background: rgba(255, 255, 255, 0.05); 
-    border: 1px solid rgba(255, 255, 255, 0.3); /* 初始描边 */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 24px;
     transition: all 0.3s ease;
     cursor: pointer;
 }
-
-.border-toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-/* 内部的白色圆点 */
+.border-toggle-switch input { opacity: 0; width: 0; height: 0; }
 .border-slider {
     position: absolute;
     cursor: pointer;
-    top: 2px;
-    left: 2px;
-    right: 2px;
-    bottom: 2px;
-    background-color: #ffffff; /* 纯白圆点 */
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    top: 2px; left: 2px;
+    width: 18px; height: 18px;
+    background-color:transparent;
+    transition: transform 0.3s ease;
     border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgb(255, 255, 255);
 }
-
-/* 选中状态 (Input:checked) */
 .border-toggle-switch input:checked + .border-slider {
     transform: translateX(20px);
 }
-.border-toggle-switch:has(input:checked) {
-    border-color: #0284c7; /* 选中后描边变蓝 */
-}
 .border-toggle-switch input:checked + .border-slider {
-    background-color: #0284c7; /* 选中后圆点变蓝 */
+    background-color:transparent; /* 选中后圆点变蓝 */
 }
-
-/* 悬浮效果 */
+.border-toggle-switch:has(input:checked) {
+    border-color: blue;
+}
 .border-toggle-switch:hover {
-    border-color: rgba(255, 255, 255, 0.8);
+    border-color: blue;
 }
 
-/* ========================================================= */
-
-/* 自定义滑块 (无填充样式延续) */
+/* ==========================================================
+ * 【自定义滑块】
+ * ========================================================== */
 input[type=range] {
     -webkit-appearance: none;
     width: 120px;
@@ -138,16 +147,45 @@ input[type=range] {
 }
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 16px; height: 16px;
     border-radius: 50%;
-    background: #ffffff;
-    border: 1px solid rgba(255,255,255,0.5);
+    background: transparent;
+    border: transparent;
     cursor: pointer;
+    transition: background 0.2s ease;
 }
 
-/* 响应式适配 */
+/* ==========================================================
+ * 【深色模式切换时，利用 JS 给 body 加 class */
+ * 这里定义：当 body 有 .dark-theme 时，文字变成白色
+ * ========================================================== */
+
+/* 1. 所有主标题和文字改为纯白 */
+body.dark-theme .settings-main-title,
+body.dark-theme .card-text-header,
+body.dark-theme .setting-label,
+body.dark-theme .settings-sub-title,
+body.dark-theme .range-label {
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* 2. 玻璃卡片和标题栏背景调暗，确保文字更突出 */
+body.dark-theme .settings-card,
+body.dark-theme .page-header.glass-panel {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* 3. 开关圆点在深色模式下保持纯白可见 */
+body.dark-theme .border-slider {
+    background-color:transparent;
+    border:transparent;
+}
+
+/* 响应式 */
 @media (max-width: 768px) {
     .settings-card { padding: 20px; }
-    .setting-item { flex-direction: row; gap: 15px; }
+    .setting-item { flex-wrap: wrap; gap: 10px; justify-content: flex-start;}
+    .range-container { margin-left: auto; }
 }

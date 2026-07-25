@@ -1,45 +1,42 @@
 <div class="settings-module">
-    <!-- 顶部标题区 -->
     <div class="page-header glass-panel">
         <div class="header-left">
-            <span style="font-weight: 600; color: #ffffff; font-size: 18px; margin-right: 8px;">系统设置</span>
+            <span class="settings-main-title">系统设置</span>
         </div>
-        <span style="font-size: 13px; color: rgba(255,255,255,0.6);">个性化您的浏览体验</span>
+        <span class="settings-sub-title">个性化您的浏览体验</span>
     </div>
 
     <div class="settings-layout">
-        
-        <!-- 设置卡片 1：显示模式 -->
         <div class="settings-card glass-panel">
             <div class="card-text-header">显示与外观</div>
             <div class="card-body">
                 
                 <div class="setting-item">
                     <div class="setting-label">
-                        <i class="fa-regular fa-moon" style="margin-right: 10px; width: 20px; text-align: center;"></i>
-                        深色模式
+                        <i class="fa-regular fa-moon"></i>
+                        <span>深色/亮色模式</span>
                     </div>
-                    <!-- 自定义描边开关 -->
-                    <label class="border-toggle-switch">
-                        <input type="checkbox" id="darkModeToggle">
-                        <span class="border-slider"></span>
-                    </label>
+                    <div class="toggle-container">
+                        <label class="border-toggle-switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="border-slider"></span>
+                        </label>
+                    </div>
                 </div>
 
-                <div class="setting-item" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; margin-top: 10px;">
+                <div class="setting-item">
                     <div class="setting-label">
-                        <i class="fa-regular fa-eye" style="margin-right: 10px; width: 20px; text-align: center;"></i>
-                        毛玻璃透明度
+                        <i class="fa-regular fa-eye"></i>
+                        <span>毛玻璃模糊度</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="color: rgba(255,255,255,0.5); font-size: 12px;">模糊</span>
+                    <div class="range-container">
+                        <span class="range-label">模糊</span>
                         <input type="range" min="5" max="25" value="15" class="glass-slider" id="blurSlider">
-                        <span style="color: rgba(255,255,255,0.5); font-size: 12px;">清晰</span>
+                        <span class="range-label">清晰</span>
                     </div>
                 </div>
 
             </div>
         </div>
-
     </div>
 </div>
