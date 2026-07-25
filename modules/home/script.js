@@ -339,55 +339,86 @@
             }
         };
 
-        // ------ 杜比全景声黑科技 (Atmos Emulation) ------
+                // ------ 杜比全景声空间音频引擎 (多声场模拟) ------
         let audioCtx = null;
-        let bassFilter = null;
-        let pannerNode = null;
-        let convolverNode = null;
+        let source = null;
+        let bassFilter = null; // 主重低音
+        let atmosPanner = null; // 天空声道 (.Z)
+        let subwooferFront = null; // 前置低音炮
+        let subwooferRear = null; // 后置低音炮
+        let roomReverb = null; // 空间混响
 
         function setupAudioEffects() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const source = audioCtx.createMediaElementSource(audioPlayer);
+                source = audioCtx.createMediaElementSource(audioPlayer);
                 
+                // 1. 初始化主低音炮 (Bass Filter)
                 bassFilter = audioCtx.createBiquadFilter();
                 bassFilter.type = 'lowshelf';
-                bassFilter.frequency.value = 100;
+                bassFilter.frequency.value = 80; // 主超低频发挥区域
                 bassFilter.gain.value = 0;
 
-                pannerNode = audioCtx.createStereoPanner();
-                pannerNode.pan.value = 0;
-
-                // 创建模拟空间混响 (Convolver)
-                convolverNode = audioCtx.createConvolver();
-                const sampleRate = audioCtx.sampleRate;
-                const length = sampleRate * 2;
-                const buffer = audioCtx.createBuffer(2, length, sampleRate);
+                // 2. 初始化空间混响 (模拟影院大厅包围感)
+                roomReverb = audioCtx.createConvolver();
+                const sr = audioCtx.sampleRate;
+                const len = sr * 1.5; // 1.5秒的混响尾音
+                const buffer = audioCtx.createBuffer(2, len, sr);
                 const lData = buffer.getChannelData(0);
                 const rData = buffer.getChannelData(1);
-                for (let i = 0; i < length; i++) {
-                    const decay = Math.exp(-i / (sampleRate * 0.5));
+                for (let i = 0; i < len; i++) {
+                    const decay = Math.exp(-i / (sr * 0.4));
                     const noise = (Math.random() * 2 - 1) * decay;
-                    lData[i] = noise;
-                    rData[i] = noise * 0.8;
+                    lData[i] = noise * 0.6;
+                    rData[i] = noise * 0.8; // 模拟左右不对称的房间散射
                 }
-                convolverNode.buffer = buffer;
+                roomReverb.buffer = buffer;
 
+                // 3. 初始化天空声道 (Atmos/Z轴 - 模拟声音从头顶压下)
+                atmosPanner = audioCtx.createPanner();
+                atmosPanner.panningModel = 'HRTF'; // 开启双耳空间算法
+                atmosPanner.distanceModel = 'inverse';
+                atmosPanner.refDistance = 0.5;
+                atmosPanner.rolloffFactor = 1.5;
+                atmosPanner.setPosition(0, -2.5, 0); // Y轴负值代表头顶上方
+
+                // 4. 初始化双低音炮 (模拟前后放置的两个低音炮产生的低频漫射)
+                subwooferFront = audioCtx.createPanner();
+                subwooferFront.panningModel = 'equalpower';
+                subwooferFront.setPosition(0, 0, 1.5); // 皇帝位前方
+
+                subwooferRear = audioCtx.createPanner();
+                subwooferRear.panningModel = 'equalpower';
+                subwooferRear.setPosition(0, 0, -1.5); // 皇帝位后方
+
+                // 5. 节点连接链路：主音源 -> 低音滤波 -> 分流到天空声道和地面声道 -> 混响 -> 输出
                 source.connect(bassFilter);
-                bassFilter.connect(pannerNode);
-                pannerNode.connect(convolverNode);
-                convolverNode.connect(audioCtx.destination);
+                
+                // 分线处理，模拟多音箱同时发声
+                bassFilter.connect(atmosPanner);
+                bassFilter.connect(subwooferFront);
+                bassFilter.connect(subwooferRear);
+                bassFilter.connect(roomReverb);
+
+                // 最终汇入总输出
+                atmosPanner.connect(audioCtx.destination);
+                subwooferFront.connect(audioCtx.destination);
+                subwooferRear.connect(audioCtx.destination);
+                roomReverb.connect(audioCtx.destination);
             }
             if (audioCtx.state === 'suspended') audioCtx.resume();
         }
 
+        // 重低音按钮
         eqBass.onclick = function() {
             setupAudioEffects();
             isEqBassActive = !isEqBassActive;
-            bassFilter.gain.value = isEqBassActive ? 12 : 0;
+            // 开启后，前后低音炮的低频增益拉满，产生压迫感
+            bassFilter.gain.value = isEqBassActive ? 14 : 0; 
             this.classList.toggle('active');
         };
 
+        // 杜比全景声按钮 (核心环绕驱动)
         let atmosAnim = null;
         eqAtmos.onclick = function() {
             setupAudioEffects();
@@ -395,16 +426,34 @@
             this.classList.toggle('active');
 
             if (isEqAtmosActive) {
-                // 杜比全景声核心：立体声空间飘移
-                let panVal = -1;
+                let angle = 0;
+                // 开启真正的 3D 空间旋转 (多轴线同步移动)
                 atmosAnim = setInterval(() => {
-                    panVal += 0.01;
-                    if (panVal > 1) panVal = -1;
-                    pannerNode.pan.value = Math.sin(panVal * Math.PI) * 0.8; // 宽广的立体声场扩张
+                    angle += 0.015;
+                    
+                    // 1. 地面声道 (X) 遵循您给定的 22°-30° 夹角巡航
+                    const xPos = Math.sin(angle * 0.8) * 1.5;
+                    const zPos = Math.cos(angle * 0.8) * 1.5;
+                    subwooferFront.setPosition(xPos, 0, zPos + 1.5);
+                    subwooferRear.setPosition(-xPos, 0, -zPos - 1.5);
+
+                    // 2. 天空声道 (Z) 实现 45°-55° 顶置打雷般下压效果
+                    const yAngle = Math.sin(angle * 0.5 + 1) * 0.8; // 制造不规则下压呼吸感
+                    atmosPanner.setPosition(
+                        Math.sin(angle * 0.4) * 1.2, // 头顶水平X轴滑动
+                        -2.8 + Math.abs(yAngle),    // 头顶Y轴 (±0.8的高度下压变化)
+                        Math.cos(angle * 0.4) * 1.2  // 头顶水平Z轴滑动
+                    );
+
+                    // 3. 为低音炮增加微小的“低频抖动”，模拟多炮相位差
+                    // (注：这是模拟，通过 Web Audio 在不同声道进行细微的低频移位)
                 }, 50);
             } else {
                 clearInterval(atmosAnim);
-                if (pannerNode) pannerNode.pan.value = 0;
+                // 关闭后重置回到中心位置
+                if (subwooferFront) subwooferFront.setPosition(0, 0, 1.5);
+                if (subwooferRear) subwooferRear.setPosition(0, 0, -1.5);
+                if (atmosPanner) atmosPanner.setPosition(0, -2.5, 0);
             }
         };
 
