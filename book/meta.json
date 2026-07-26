@@ -7,7 +7,8 @@
     "2026.07.25 - 发布Github26H3，完成DucksBlog数据备份迁移，但是没有上传Github。（Gqun）",
     "2026.07.25 - 修复杜比全景声声音环绕问题（AI DeepSeek）",
     "2026.07.25 - 修复夜间模式文字预览问题（Cat）",
-    "2026.07.25 - 上传音乐，重构book数据存储文件夹（Cat）"
+    "2026.07.25 - 上传音乐，重构book数据存储文件夹（Cat）",
+    "2026.07.26 - 上传博客，关于鸿蒙的看法（一）（Cat）"
 
   ],
   "music": [
@@ -28,6 +29,16 @@
     "date": "2026-07-24",
     "cover": "cover.jpg",
     "mdPath": "/book/home/1/md/content.md" 
+    },
+
+        { 
+    "id": "2", 
+    "title": "关于鸿蒙的看法（一）",
+    "subtitle": "与Windows，Mac的软件对比",
+    "category": "鸿蒙",
+    "date": "2026-07-26",
+    "cover": "cover.jpg" ,
+    "mdPath": "/book/home/2/md/content.md" 
     }
 
   ],
@@ -41,6 +52,16 @@
     "date": "2026-07-24",
     "cover": "cover.jpg" ,
     "mdPath": "/book/home/1/md/content.md" 
+    },
+
+    { 
+    "id": "2", 
+    "title": "关于鸿蒙的看法（一）",
+    "subtitle": "与Windows，Mac的软件对比",
+    "category": "鸿蒙",
+    "date": "2026-07-26",
+    "cover": "cover.jpg" ,
+    "mdPath": "/book/home/2/md/content.md" 
     }
 
   ]
