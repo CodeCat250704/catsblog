@@ -1,216 +1,224 @@
-/* ============================================================== *
- *  注意：本文件包含强力反调试逻辑（暴力摧毁窗口与无限重载）。
- *  在本地编写代码、调试时，请务必去 /index.html 中将本 JS 注释掉！
- *  请勿在调试状态引入此文件，否则会导致本地调试环境彻底无法使用！
- * ============================================================== */
+/* ==========================================================
+ * 【全能交互引擎 - 稳固响应版】
+ * 职能：语言切换菜单、猫开始菜单、11项右键菜单
+ * ========================================================== */
 
 (function() {
     "use strict";
 
-    // =========================================================================
-    // 【反调试区块 1】：暴力监测窗口尺寸与强制重载逻辑
-    // 当用户打开 F12 开发者工具时，浏览器窗口的外宽/内宽、外高/内高会产生巨大差异。
-    // 此逻辑每秒检测一次，一旦发现疑似调试工具开启，立即清空页面并无限重载。
-    // =========================================================================
-    function antiDebugCheck() {
-        // 设置一个极高的阈值 (F12打开通常会产生 200px 以上的差异)
-        var threshold = 100; 
+    // --- 1. 定义您支持的语言列表 ---
+    var LANG_LIST = [
+        { code: "zh-CN", name: "简体中文" },
+        { code: "zh-TW", name: "繁體中文" },
+        { code: "en", name: "English" },
+        { code: "ja", name: "日本語" },
+        { code: "ru", name: "Русский" },
+        { code: "es", name: "Español" },
+        { code: "fr", name: "Français" }
+    ];
 
-        var widthDiff = window.outerWidth - window.innerWidth;
-        var heightDiff = window.outerHeight - window.innerHeight;
+    // 样式字典（统一所有菜单的毛玻璃质感）
+    var STYLE_BASE = "position:fixed; padding:6px 0; display:none; z-index:99999; background: rgba(20, 20, 30, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color:#fff; font:14px sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,0.4);";
 
-        // 一旦发现内外尺寸差异过大，触发暴力防御
-        if (widthDiff > threshold || heightDiff > threshold) {
-            // 第一步：立即清除页面所有内容，防止数据留存
-            document.body.innerHTML = '';
-            document.head.innerHTML = '';
-            
-            // 第二步：强制中断所有现有 JS 运行
-            throw new Error('防调试触发：已切断环境');
-            
-            // 第三步：1秒后强制重载页面，让用户根本无法在工具里点击查看
-            // (即使工具拦截了重载，由于上方页面被清空，调试器依然无用)
-            setTimeout(function() {
-                window.location.reload();
-            }, 1000);
+    function createMenu(id, width) {
+        var m = document.getElementById(id);
+        if (!m) {
+            m = document.createElement("div");
+            m.id = id;
+            m.style.cssText = STYLE_BASE + "width:" + width + "px;";
+            document.body.appendChild(m);
         }
+        return m;
     }
 
-    // 尝试使用更密集的轮询（1秒1次），增加破译难度
-    try {
-        setInterval(antiDebugCheck, 1000);
-    } catch (e) {
-        // 如果有人在控制台试图拦截 setInterval，我们什么也不做，静默失效。
-    }
-
-
-    // =========================================================================
-    // 【反调试区块 2】：清空控制台
-    // 打开工具后，强行清理控制台输出，防止信息泄露
-    // =========================================================================
-    try {
-     setInterval(function() {
-           console.clear();
-       }, 2000);
-    } catch (e) {}
-
-
-    // =========================================================================
-    // 【防御区块 3】：防 F12 快捷键、防 Ctrl+Shift+I 等键盘监听
-    // 拦截用户试图通过键盘直接呼出控制台的操作
-    // =========================================================================
-    document.addEventListener('keydown', function(e) {
-        // 禁用 F12
-        if (e.key === 'F12' || e.keyCode === 123) {
-            e.preventDefault();
-            return false;
-        }
-        // 禁用 Ctrl+Shift+I (检查)
-        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
-            e.preventDefault();
-            return false;
-        }
-        // 禁用 Ctrl+Shift+J (控制台)
-        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
-            e.preventDefault();
-            return false;
-        }
-        // 禁用 Ctrl+U (查看源代码)
-        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
-            e.preventDefault();
-            return false;
-        }
-    });
-
-
-    // =========================================================================
-    // 【交互区块 4】：自定义毛玻璃右键菜单
-    // 覆盖原生右键菜单，提供极简的“复制、全选、模块跳转”功能
-    // =========================================================================
-    
-    // 禁止右键点击时出现浏览器原生菜单
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        showCustomMenu(e.clientX, e.clientY);
-    });
-
-    // 点击页面任何其他位置，自动关闭菜单
-    document.addEventListener('click', function(e) {
-        var menu = document.getElementById('custom-context-menu');
-        if (menu && !menu.contains(e.target)) {
-            menu.style.display = 'none';
-        }
-    });
-
-    // 渲染自定义菜单
-    function showCustomMenu(x, y) {
-        var menu = document.getElementById('custom-context-menu');
-        if (!menu) {
-            menu = document.createElement('div');
-            menu.id = 'custom-context-menu';
-            menu.className = 'context-menu-glass';
-            document.body.appendChild(menu);
-        }
-
-        menu.innerHTML = `
-            <div class="menu-item" data-action="copy"><i class="fa-regular fa-copy"></i> 复制</div>
-            <div class="menu-item" data-action="select-all"><i class="fa-regular fa-square-check"></i> 全选</div>
-            <div class="menu-divider"></div>
-            <div class="menu-item" data-action="goto-home"><i class="fa-solid fa-house"></i> 跳转首页</div>
-            <div class="menu-item" data-action="goto-categories"><i class="fa-solid fa-layer-group"></i> 跳转分类</div>
-            <div class="menu-item" data-action="goto-settings"><i class="fa-solid fa-gear"></i> 跳转设置</div>
-        `;
-
-        // 绑定点击事件
-        menu.querySelectorAll('.menu-item').forEach(function(item) {
-            item.onclick = function(e) {
+    function bindMenu(menu) {
+        menu.querySelectorAll(".menu-item").forEach(function(el) {
+            el.style.cssText = "padding:10px 20px; cursor:pointer; display:block; transition:0.15s;";
+            el.onmouseenter = function() { this.style.background = "rgba(255,255,255,0.1)"; };
+            el.onmouseleave = function() { this.style.background = "transparent"; };
+            el.onclick = function(e) {
                 e.stopPropagation();
-                var action = this.dataset.action;
-                handleMenuAction(action);
-                menu.style.display = 'none';
+                handleAction(this.getAttribute("data-action"));
+                menu.style.display = "none";
             };
         });
-
-        // 计算位置，防止超出屏幕
-        var menuWidth = 160;
-        var menuHeight = 220;
-        var left = x;
-        var top = y;
-
-        if (x + menuWidth > window.innerWidth) {
-            left = window.innerWidth - menuWidth - 10;
-        }
-        if (y + menuHeight > window.innerHeight) {
-            top = window.innerHeight - menuHeight - 10;
-        }
-
-        menu.style.left = left + 'px';
-        menu.style.top = top + 'px';
-        menu.style.display = 'block';
     }
 
-    // 菜单动作处理
-    function handleMenuAction(action) {
+    // ==========================================================
+    // 【功能 1：猫开始菜单】
+    // ==========================================================
+    var startBtn = document.getElementById("start-menu-btn");
+    if (startBtn) {
+        startBtn.onclick = function(e) {
+            e.stopPropagation();
+            var menu = createMenu("start-context-menu", "160px");
+            menu.innerHTML = `
+                <div class="menu-item" data-action="goto-home">首页</div>
+                <div class="menu-item" data-action="goto-categories">分类</div>
+                <div class="menu-item" data-action="goto-collection">收藏</div>
+                <div class="menu-item" data-action="goto-notice">通知</div>
+                <div class="menu-item" data-action="goto-co-create">共创</div>
+                <div class="menu-item" data-action="goto-submit">投稿</div>
+                <div class="menu-item" data-action="goto-about">关于</div>
+                <div class="menu-divider" style="height:1px; background:rgba(255,255,255,0.1); margin:4px 16px;"></div>
+                <div class="menu-item" data-action="toggle-dark">切换深色模式</div>
+                <div class="menu-item" data-action="refresh-page">刷新页面</div>
+                <div class="menu-item" data-action="goto-settings">设置</div>
+            `;
+
+            var rect = this.getBoundingClientRect();
+            var top = rect.top - 320; var left = rect.left - 60;
+            if (top < 20) top = 20; if (left + 160 > window.innerWidth) left = window.innerWidth - 170;
+            menu.style.top = top + "px"; menu.style.left = left + "px";
+            bindMenu(menu);
+            menu.style.display = "block";
+        };
+    }
+
+    // ==========================================================
+    // 【功能 2：右键菜单】
+    // ==========================================================
+    document.addEventListener("contextmenu", function(e) {
+        e.preventDefault();
+        var menu = createMenu("custom-context-menu", "150px");
+        menu.innerHTML = `
+            <div class="menu-item" data-action="copy">复制</div>
+            <div class="menu-item" data-action="select-all">全选</div>
+            <div class="menu-divider" style="height:1px; background:rgba(255,255,255,0.15); margin:4px 16px;"></div>
+            <div class="menu-item" data-action="goto-home">首页</div>
+            <div class="menu-item" data-action="goto-categories">分类</div>
+            <div class="menu-item" data-action="goto-collection">收藏</div>
+            <div class="menu-item" data-action="goto-notice">通知</div>
+            <div class="menu-item" data-action="goto-co-create">共创</div>
+            <div class="menu-item" data-action="goto-submit">投稿</div>
+            <div class="menu-item" data-action="goto-about">关于</div>
+            <div class="menu-item" data-action="goto-settings">设置</div>
+            <div class="menu-divider" style="height:1px; background:rgba(255,255,255,0.15); margin:4px 16px;"></div>
+            <div class="menu-item" data-action="refresh-page">刷新页面</div>
+        `;
+
+        var left = e.clientX, top = e.clientY;
+        if (left + 150 > window.innerWidth) left = window.innerWidth - 160;
+        if (top + 350 > window.innerHeight) top = window.innerHeight - 360;
+        menu.style.top = top + "px"; menu.style.left = left + "px";
+        bindMenu(menu);
+        menu.style.display = "block";
+    });
+
+    // ==========================================================
+    // 【动作分发器】
+    // ==========================================================
+    function handleAction(action) {
         switch (action) {
-            case 'copy':
-                var selection = window.getSelection();
-                if (selection.toString().length > 0) {
-                    navigator.clipboard.writeText(selection.toString()).then(function() {
-                        showFloatingToast('已复制到剪贴板');
-                    }).catch(function() {
-                        document.execCommand('copy');
-                        showFloatingToast('已复制到剪贴板');
-                    });
-                } else {
-                    showFloatingToast('未选中任何内容');
+            case "copy":
+                var sel = window.getSelection().toString();
+                if (sel) navigator.clipboard.writeText(sel).then(function() { showToast("已复制"); });
+                else showToast("未选中内容");
+                break;
+            case "select-all": document.execCommand("selectAll"); showToast("已全选"); break;
+            case "refresh-page": window.location.reload(); break;
+            case "toggle-dark":
+                var toggle = document.getElementById("darkModeToggle");
+                if (toggle) { toggle.checked = !toggle.checked; toggle.dispatchEvent(new Event("change")); showToast(toggle.checked ? "已切换深色模式" : "已切换亮色模式"); }
+                break;
+            default:
+                if (action.startsWith("goto-")) {
+                    var mod = action.replace("goto-", "");
+                    var btn = document.querySelector(".taskbar-item[data-module='" + mod + "']");
+                    if (btn) btn.click();
                 }
                 break;
-            case 'select-all':
-                document.execCommand('selectAll', false, null);
-                showFloatingToast('已全选');
-                break;
-            case 'goto-home':
-                triggerNavigation('home');
-                break;
-            case 'goto-categories':
-                triggerNavigation('categories');
-                break;
-            case 'goto-settings':
-                triggerNavigation('settings');
-                break;
         }
     }
 
-    // 触发全局路由跳转
-    function triggerNavigation(moduleName) {
-        var targetLi = document.querySelector('[data-module="' + moduleName + '"]');
-        if (targetLi) {
-            targetLi.click();
-        } else if (window.loadModule) {
-            window.loadModule(moduleName);
+    function showToast(msg) {
+        var t = document.getElementById("custom-toast");
+        if (!t) {
+            t = document.createElement("div");
+            t.id = "custom-toast";
+            document.body.appendChild(t);
+            t.style.cssText = "position:fixed; bottom:85px; left:50%; transform:translateX(-50%); padding:12px 28px; background:rgba(0,0,0,0.4); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.2); border-radius:30px; color:#fff; font-size:14px; display:none; z-index:999999;";
         }
+        t.textContent = msg; t.style.display = "block";
+        clearTimeout(t._timer);
+        t._timer = setTimeout(function() { t.style.display = "none"; }, 2000);
     }
 
-    // 全局轻提示 (Toast)
-    function showFloatingToast(msg) {
-        var toast = document.getElementById('custom-toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'custom-toast';
-            toast.className = 'glass-toast';
-            document.body.appendChild(toast);
-        }
-        toast.textContent = msg;
-        toast.style.display = 'block';
-        toast.style.opacity = '1';
-        
-        clearTimeout(toast._timer);
-        toast._timer = setTimeout(function() {
-            toast.style.opacity = '0';
-            setTimeout(function() {
-                toast.style.display = 'none';
-            }, 300);
-        }, 2000);
-    }
+})();
 
+
+/* ==========================================================
+ * 【接入开源翻译引擎：底部地球菜单交互】
+ * ========================================================== */
+
+(function() {
+    // 1. 准备任务栏的翻译按钮
+    document.addEventListener('DOMContentLoaded', function() {
+        var taskbar = document.getElementById('taskbar');
+        if (!taskbar) return;
+
+        // 检查是否已经存在翻译按钮
+        var existingBtn = document.getElementById('lang-menu-btn');
+        if (!existingBtn) {
+            var menuBtn = document.createElement('div');
+            menuBtn.id = 'lang-menu-btn';
+            menuBtn.className = 'taskbar-start-btn';
+            menuBtn.style.cssText = 'cursor: pointer; font-size: 18px; margin-left: 10px; position: relative;';
+            menuBtn.innerHTML = '<i class="fa-solid fa-language"></i>';
+            
+            // 插入到任务栏中（在猫图标后面）
+            var catBtn = document.getElementById('start-menu-btn');
+            if (catBtn) {
+                catBtn.parentNode.insertBefore(menuBtn, catBtn.nextSibling);
+            } else {
+                taskbar.appendChild(menuBtn);
+            }
+
+            // 2. 语言列表菜单 DOM
+            var dropdown = document.createElement('div');
+            dropdown.id = 'lang-dropdown';
+            dropdown.style.cssText = 'display: none; position: absolute; bottom: 70px; left: 0; width: 130px; background: rgba(20, 20, 30, 0.95); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 8px 0; box-shadow: 0 8px 30px rgba(0,0,0,0.5); z-index: 999;';
+            
+            var langList = [
+                { code: 'zh', name: '简体中文' },
+                { code: 'en', name: 'English' },
+                { code: 'ja', name: '日本語' },
+                { code: 'es', name: 'Español' },
+                { code: 'fr', name: 'Français' },
+                { code: 'ru', name: 'Русский' }
+            ];
+
+            langList.forEach(function(lang) {
+                var item = document.createElement('div');
+                item.textContent = lang.name;
+                item.style.cssText = 'padding: 8px 16px; cursor: pointer; color: #fff; font-size: 14px; transition: 0.15s;';
+                item.onmouseenter = function() { this.style.background = 'rgba(255,255,255,0.1)'; };
+                item.onmouseleave = function() { this.style.background = 'transparent'; };
+                item.onclick = function() {
+                    if (window.translatePageTo) {
+                        window.translatePageTo(lang.code);
+                    } else {
+                        alert("翻译引擎正在后台加载，请稍候再点...");
+                    }
+                    dropdown.style.display = 'none';
+                };
+                dropdown.appendChild(item);
+            });
+
+            menuBtn.appendChild(dropdown);
+
+            // 3. 开关逻辑
+            menuBtn.onclick = function(e) {
+                e.stopPropagation();
+                var isVisible = dropdown.style.display === 'block';
+                dropdown.style.display = isVisible ? 'none' : 'block';
+            };
+
+            document.addEventListener('click', function(e) {
+                if (!menuBtn.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+    });
 })();

@@ -1,63 +1,98 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. 路由系统 SPA
-    const mainContent = document.getElementById('main-content');
-    const navItems = document.querySelectorAll('.nav-links li, #settings-btn');
-    
-    const modulePaths = {
-        'home': '/modules/home/',
-        'categories': '/modules/categories/',
-        'collection': '/modules/collection/',
-        'notice': '/modules/notice/',
-        'co-create': '/modules/co-create/',
-        'submit': '/modules/submit/',
-        'about': '/modules/about/',
-        'settings': '/modules/settings/'
+/* ==========================================================
+ * 【纯净 SPA 路由引擎】
+ * ========================================================== */
+
+(function() {
+    "use strict";
+
+    // 1. 实时时钟
+    function updateClock() {
+        var now = new Date();
+        var days = ["周日","周一","周二","周三","周四","周五","周六"];
+        var dateStr = days[now.getDay()] + ", " + (now.getMonth()+1) + "月 " + now.getDate() + " " + now.getFullYear();
+        var timeStr = now.toLocaleTimeString("zh-CN", { hour12: true });
+        var el = document.getElementById("clock-display");
+        if (el) el.textContent = dateStr + " | " + timeStr;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // 2. 全局音量控制
+    var volSlider = document.getElementById("global-volume-slider");
+    var volIcon = document.getElementById("vol-icon");
+    function applyVolume(val) {
+        var audio = document.getElementById("myHomeAudio");
+        if (audio) audio.volume = val / 100;
+        if (volIcon) {
+            if (val == 0) volIcon.className = "fa-solid fa-volume-xmark";
+            else if (val < 30) volIcon.className = "fa-solid fa-volume-low";
+            else volIcon.className = "fa-solid fa-volume-high";
+        }
+    }
+    if (volSlider) {
+        volSlider.addEventListener("input", function() { applyVolume(this.value); });
+        setTimeout(function() { applyVolume(volSlider.value); }, 500);
+    }
+
+    // 3. 核心路由系统
+    var MODULES = {
+        "home": "/modules/home/",
+        "categories": "/modules/categories/",
+        "collection": "/modules/collection/",
+        "notice": "/modules/notice/",
+        "co-create": "/modules/co-create/",
+        "submit": "/modules/submit/",
+        "about": "/modules/about/",
+        "settings": "/modules/settings/"
     };
+    var mainEl = document.getElementById("main-content");
 
-    function loadModule(moduleName) {
-        document.querySelectorAll('.nav-links li').forEach(el => el.classList.remove('active'));
-        const activeLi = document.querySelector(`[data-module="${moduleName}"]`);
-        if(activeLi) activeLi.classList.add('active');
+    function loadModule(name) {
+        var path = MODULES[name];
+        if (!path) return;
 
-        const basePath = modulePaths[moduleName];
-        if(!basePath) return;
+        document.querySelectorAll(".taskbar-item").forEach(function(el) {
+            el.classList.remove("active");
+        });
+        var target = document.querySelector(".taskbar-item[data-module='" + name + "']");
+        if (target) target.classList.add("active");
 
-        fetch(basePath + 'index.html')
-            .then(response => response.text())
-            .then(html => {
-                mainContent.innerHTML = html;
+        mainEl.innerHTML = "<div style='display:flex; justify-content:center; align-items:center; height:100%; color:rgba(255,255,255,0.6);'>加载中...</div>";
+
+        fetch(path + "index.html")
+            .then(function(res) { return res.ok ? res.text() : Promise.reject(); })
+            .then(function(html) {
+                mainEl.innerHTML = html;
                 
-                const existingLink = document.querySelector('link[data-module-css]');
-                if(existingLink) existingLink.remove();
-                const link = document.createElement('link');
-                link.rel = 'stylesheet';
-                link.href = basePath + 'style.css';
-                link.setAttribute('data-module-css', 'true');
+                var oldCss = document.querySelector("link[data-module-css]");
+                if (oldCss) oldCss.remove();
+                var link = document.createElement("link");
+                link.rel = "stylesheet"; link.href = path + "style.css";
+                link.setAttribute("data-module-css", name);
                 document.head.appendChild(link);
 
-                const existingScript = document.querySelector('script[data-module-js]');
-                if(existingScript) existingScript.remove();
-                const script = document.createElement('script');
-                script.src = basePath + 'script.js';
-                script.setAttribute('data-module-js', 'true');
-                // 【关键修复】删除了 defer 属性，让注入的脚本立即执行！
+                var oldJs = document.querySelector("script[data-module-js]");
+                if (oldJs) oldJs.remove();
+                var script = document.createElement("script");
+                script.src = path + "script.js";
+                script.setAttribute("data-module-js", name);
                 document.body.appendChild(script);
             })
-            .catch(err => {
-                mainContent.innerHTML = `<div class="glass-panel" style="padding: 40px; text-align: center;">
-                    <i class="fa-solid fa-code-branch" style="font-size: 40px; margin-bottom: 15px; color: #ffffff;"></i>
-                    <h3 style="color: #ffffff;">模块建设中</h3>
-                    <p style="color: rgba(255,255,255,0.7);">请在此文件夹放入对应的 index.html, style.css, script.js</p>
-                </div>`;
+            .catch(function() {
+                mainEl.innerHTML = "<div style='padding:40px;color:#ffcccc;text-align:center;'>加载失败</div>";
             });
     }
 
-    navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const module = item.getAttribute('data-module');
-            if(module) loadModule(module);
+    var taskbar = document.getElementById("taskbar");
+    if (taskbar) {
+        taskbar.addEventListener("click", function(e) {
+            var btn = e.target.closest("[data-module]");
+            if (btn) {
+                loadModule(btn.getAttribute("data-module"));
+            }
         });
-    });
+    }
 
-    loadModule('home');
-});
+    // 直接加载首页
+    loadModule("home");
+})();

@@ -1,257 +1,101 @@
+/* ==========================================================
+ * 【纯净 SPA 路由引擎 - 彻底清理翻译残留版】
+ * ========================================================== */
+
 (function() {
-    const categorySwitchList = document.getElementById('category-switch-list');
-    const articleSwitchList = document.getElementById('article-switch-list');
-    const readingContent = document.getElementById('reading-content');
+    "use strict";
 
-    let allPosts = [];
+    // 1. 实时时钟
+    function updateClock() {
+        var now = new Date();
+        var days = ["周日","周一","周二","周三","周四","周五","周六"];
+        var dateStr = days[now.getDay()] + ", " + (now.getMonth()+1) + "月 " + now.getDate() + " " + now.getFullYear();
+        var timeStr = now.toLocaleTimeString("zh-CN", { hour12: true });
+        var el = document.getElementById("clock-display");
+        if (el) el.textContent = dateStr + " | " + timeStr;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
 
-    const iconMap = {
-        "前端开发": "fa-solid fa-code", 
-        "后端架构": "fa-solid fa-server",
-        "UI/UX 设计": "fa-solid fa-pen-nib", 
-        "音乐分享": "fa-solid fa-headphones",
-        "生活随笔": "fa-solid fa-mug-saucer", 
-        "科技前沿": "fa-solid fa-microchip"
+    // 2. 全局音量控制
+    var volSlider = document.getElementById("global-volume-slider");
+    var volIcon = document.getElementById("vol-icon");
+    function applyVolume(val) {
+        var audio = document.getElementById("myHomeAudio");
+        if (audio) audio.volume = val / 100;
+        if (volIcon) {
+            if (val == 0) volIcon.className = "fa-solid fa-volume-xmark";
+            else if (val < 30) volIcon.className = "fa-solid fa-volume-low";
+            else volIcon.className = "fa-solid fa-volume-high";
+        }
+    }
+    if (volSlider) {
+        volSlider.addEventListener("input", function() { applyVolume(this.value); });
+        setTimeout(function() { applyVolume(volSlider.value); }, 500);
+    }
+
+    // 3. 核心路由系统
+    var MODULES = {
+        "home": "/modules/home/",
+        "categories": "/modules/categories/",
+        "collection": "/modules/collection/",
+        "notice": "/modules/notice/",
+        "co-create": "/modules/co-create/",
+        "submit": "/modules/submit/",
+        "about": "/modules/about/",
+        "settings": "/modules/settings/"
     };
+    var mainEl = document.getElementById("main-content");
 
-    // ==========================================================
-    // 【Markdown 解析器】
-    // ==========================================================
-    function parseMarkdown(text, baseImageUrl) {
-        if (!text) return '';
-        let html = text;
+    function loadModule(name) {
+        var path = MODULES[name];
+        if (!path) return;
 
-        // 1. 图片：强制拼接绝对路径 (根据您的真实目录：/md/picture/)
-        html = html.replace(/!\[(.*?)\]\((.*?)\)/g, function(match, alt, src) {
-            let finalSrc = src;
-            if (src && typeof src === 'string') {
-                if (!src.startsWith('http') && !src.startsWith('/')) {
-                    // 关键！直接拼入 baseImageUrl
-                    finalSrc = baseImageUrl + src;
-                }
-            }
-            return `<img src="${finalSrc}" alt="${alt || ''}" style="max-width: 100%; height: auto; border-radius: 6px; margin: 15px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">`;
+        document.querySelectorAll(".taskbar-item").forEach(function(el) {
+            el.classList.remove("active");
         });
+        var target = document.querySelector(".taskbar-item[data-module='" + name + "']");
+        if (target) target.classList.add("active");
 
-        // 2. 链接
-        html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color: #0056b3; text-decoration: underline;">$1</a>');
+        mainEl.innerHTML = "<div style='display:flex; justify-content:center; align-items:center; height:100%; color:rgba(255,255,255,0.6);'>加载中...</div>";
 
-        // 3. 标题
-        html = html.replace(/^### (.*$)/gim, '<h3 style="margin: 25px 0 10px 0; color: #222;">$1</h3>');
-        html = html.replace(/^## (.*$)/gim, '<h2 style="margin: 30px 0 15px 0; color: #111; border-bottom: 1px solid #eee; padding-bottom: 5px;">$1</h2>');
-        html = html.replace(/^# (.*$)/gim, '<h1 style="margin: 35px 0 20px 0; color: #000;">$1</h1>');
+        fetch(path + "index.html")
+            .then(function(res) { return res.ok ? res.text() : Promise.reject(); })
+            .then(function(html) {
+                mainEl.innerHTML = html;
+                
+                var oldCss = document.querySelector("link[data-module-css]");
+                if (oldCss) oldCss.remove();
+                var link = document.createElement("link");
+                link.rel = "stylesheet"; link.href = path + "style.css";
+                link.setAttribute("data-module-css", name);
+                document.head.appendChild(link);
 
-        // 4. 加粗斜体
-        html = html.replace(/\*\*\*(.*?)\*\*\*/gim, '<strong><em>$1</em></strong>');
-        html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
-        html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
-
-        // 5. 分割线
-        html = html.replace(/^---$/gim, '<hr style="border: 0; border-top: 1px solid #ddd; margin: 30px 0;">');
-
-        // 6. 代码块防溢出
-        html = html.replace(/```([\s\S]*?)```/g, function(match, code) {
-            return `<pre style="overflow: auto; white-space: pre-wrap; word-wrap: break-word; background: #f4f4f4; border: 1px solid #e0e0e0; border-radius: 6px; padding: 15px; margin: 15px 0; max-width: 100%;"><code style="font-family: monospace; font-size: 14px; color: #333;">${code.trim()}</code></pre>`;
-        });
-
-        // 7. 行内代码
-        html = html.replace(/`(.*?)`/g, '<code style="background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 14px; color: #d63384;">$1</code>');
-
-        // 8. 有序列表
-        let lines = html.split('\n');
-        let resultLines = [];
-        let inOrderedList = false;
-        let listBuffer = [];
-
-        for (let i = 0; i < lines.length; i++) {
-            let line = lines[i];
-            let match = line.match(/^(\d+)\.\s(.*)$/);
-            if (match) {
-                if (!inOrderedList) { inOrderedList = true; listBuffer = []; }
-                listBuffer.push(`<li style="margin-bottom: 6px;">${match[2]}</li>`);
-            } else {
-                if (inOrderedList) {
-                    resultLines.push('<ol style="margin: 15px 0; padding-left: 20px;">');
-                    resultLines.push(listBuffer.join('\n'));
-                    resultLines.push('</ol>');
-                    inOrderedList = false;
-                    listBuffer = [];
-                }
-                resultLines.push(line);
-            }
-        }
-        if (inOrderedList) {
-            resultLines.push('<ol style="margin: 15px 0; padding-left: 20px;">');
-            resultLines.push(listBuffer.join('\n'));
-            resultLines.push('</ol>');
-        }
-        html = resultLines.join('\n');
-
-        // 9. 无序列表
-        html = html.replace(/^\s*-\s(.*$)/gim, '<li style="margin-bottom: 6px;">$1</li>');
-        html = html.replace(/((?:<li.*>.*<\/li>\s*)+)/g, '<ul style="margin: 15px 0; padding-left: 20px;">$1</ul>');
-
-        // 10. 段落换行
-        html = html.replace(/\n\s*\n/g, '</p><p style="margin-bottom: 15px;">');
-        html = '<p style="margin-bottom: 15px;">' + html + '</p>';
-        html = html.replace(/<p><pre/g, '<pre').replace(/<\/pre><\/p>/g, '</pre>');
-
-        return html;
-    }
-
-    // ==========================================================
-    // 【核心数据加载】
-    // ==========================================================
-    async function loadCategoriesData() {
-        try {
-            const response = await fetch('/book/meta.json');
-            if (!response.ok) throw new Error(`读取失败: ${response.status}`);
-            const data = await response.json();
-            allPosts = data.posts || [];
-            if (allPosts.length === 0) {
-                categorySwitchList.innerHTML = `<div style="color:rgba(255,255,255,0.4); text-align:center; padding: 20px;">暂无文章数据</div>`;
-                return;
-            }
-            renderCategorySwitcher(allPosts);
-        } catch (error) {
-            console.error('数据加载失败:', error);
-            categorySwitchList.innerHTML = `<div style="color:#ffcccc; text-align:center; padding:20px;">未能读取到 /book/meta.json</div>`;
-        }
-    }
-
-    function renderCategorySwitcher(posts) {
-        const categories = [...new Set(posts.map(p => p.category))];
-        const defaultCat = categories.length > 0 ? categories[0] : null;
-
-        categorySwitchList.innerHTML = '';
-        categories.forEach(cat => {
-            const btn = document.createElement('div');
-            btn.className = 'category-btn';
-            const iconClass = iconMap[cat] || "fa-regular fa-folder";
-            btn.innerHTML = `<i class="${iconClass}"></i> ${cat}`;
-            if (cat === defaultCat) btn.classList.add('active');
-
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.category-btn').forEach(el => el.classList.remove('active'));
-                btn.classList.add('active');
-                renderArticleList(posts.filter(p => p.category === cat));
+                var oldJs = document.querySelector("script[data-module-js]");
+                if (oldJs) oldJs.remove();
+                var script = document.createElement("script");
+                script.src = path + "script.js";
+                script.setAttribute("data-module-js", name);
+                document.body.appendChild(script);
+            })
+            .catch(function() {
+                mainEl.innerHTML = "<div style='padding:40px;color:#ffcccc;text-align:center;'>加载失败</div>";
             });
-
-            categorySwitchList.appendChild(btn);
-        });
-
-        if (defaultCat) {
-            const firstBtn = categorySwitchList.querySelector('.category-btn');
-            if (firstBtn) firstBtn.click();
-        }
     }
 
-    function renderArticleList(filteredPosts) {
-        const sorted = filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        articleSwitchList.innerHTML = '';
-        if (sorted.length === 0) {
-            articleSwitchList.innerHTML = `<div style="color:rgba(255,255,255,0.4); text-align:center; padding: 20px;">该分类暂无文章</div>`;
-            readingContent.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; height:100%; text-align:center;">
-                <div><h1 style="font-size: 40px; color: rgba(255,255,255,0.8); font-weight: 300; margin:0;">阅读文章区域</h1>
-                <p style="font-size: 15px; color: rgba(255,255,255,0.4); margin-top: 10px;">请从左侧选择文章开始阅读</p></div>
-            </div>`;
-            return;
-        }
-
-        sorted.forEach((post, index) => {
-            const item = document.createElement('div');
-            item.className = 'article-item';
-            if (index === 0) item.classList.add('active');
-            item.innerHTML = `<div class="title">${post.title}</div><div class="subtitle">${post.subtitle || '无副标题'}</div>`;
-
-            item.addEventListener('click', () => {
-                document.querySelectorAll('.article-item').forEach(el => el.classList.remove('active'));
-                item.classList.add('active');
-                renderReadingArea(post);
-            });
-
-            articleSwitchList.appendChild(item);
-        });
-
-        const firstItem = articleSwitchList.querySelector('.article-item');
-        if (firstItem) firstItem.click();
-    }
-
-    // ==========================================================
-    // 【渲染阅读区 - 完全按照您的真实路径修正】
-    // ==========================================================
-    function renderReadingArea(post) {
-        readingContent.innerHTML = `
-            <div style="display:flex; justify-content:center; align-items:center; height:100%; width:100%; color: rgba(255,255,255,0.4);">
-                <i class="fa-solid fa-circle-notch fa-spin" style="margin-right:8px;"></i> 正在加载文章...
-            </div>
-        `;
-
-        try {
-            let mdUrl = post.mdPath;
-            if (!mdUrl) {
-                readingContent.innerHTML = `<div style="width: 100%; padding: 40px; text-align: left;">
-                    <h1 style="font-size: 34px; color: #ffffff;">${post.title}</h1>
-                    <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 4px; margin-top: 20px; color: #856404; font-size: 14px;">
-                        <strong>⚠️ 提示：</strong><br>请在 <code>meta.json</code> 中指定 <code>"mdPath"</code> 字段。
-                    </div>
-                </div>`;
-                return;
+    var taskbar = document.getElementById("taskbar");
+    if (taskbar) {
+        taskbar.addEventListener("click", function(e) {
+            var btn = e.target.closest("[data-module]");
+            // 翻译按钮已删除，此处直接处理导航跳转
+            if (btn) {
+                loadModule(btn.getAttribute("data-module"));
             }
-
-            fetch(mdUrl)
-                .then(response => {
-                    if (!response.ok) throw new Error('404 Not Found');
-                    return response.text();
-                })
-                .then(rawText => {
-                    // ==============================================
-                    // 【终极图片路径定位：直击您的真实目录】
-                    // 根据您的描述：图片在 /book/home/1/md/picture/
-                    // ==============================================
-                    let baseImageUrl = '';
-                    // 获取 md 文件所在的目录（例如：/book/home/1/md/）
-                    const lastSlashIndex = mdUrl.lastIndexOf('/');
-                    if (lastSlashIndex !== -1) {
-                        baseImageUrl = mdUrl.substring(0, lastSlashIndex + 1) + 'picture/';
-                    }
-                    
-                    // 调用解析器
-                    let html = parseMarkdown(rawText, baseImageUrl);
-                    
-                    // 渲染最终布局
-                    readingContent.innerHTML = `
-                        <div style="width: 100%; height: 100%; padding: 0 30px 20px 30px; box-sizing: border-box; overflow-y: auto; overflow-x: hidden; text-align: left; display: flex; flex-direction: column;">
-                            <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.15); flex-shrink: 0;">
-                                <h1 style="font-size: 34px; font-weight: 600; color: #ffffff; margin: 0 0 10px 0; letter-spacing: 1px;">${post.title}</h1>
-                                <div style="font-size: 14px; color: rgba(255, 255, 255, 0.6); display: flex; gap: 20px; flex-wrap: wrap;">
-                                    <span><i class="fa-regular fa-folder-open" style="margin-right: 6px;"></i> ${post.category || '未分类'}</span>
-                                    <span><i class="fa-regular fa-calendar" style="margin-right: 6px;"></i> ${post.date || '未知日期'}</span>
-                                </div>
-                            </div>
-                            <div class="article-body" style="font-size: 17px; line-height: 1.8; color: #222222; flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 40px; word-break: break-all; max-width: 100%;">
-                                ${html}
-                            </div>
-                        </div>
-                    `;
-                })
-                .catch(error => {
-                    readingContent.innerHTML = `
-                        <div style="width: 100%; padding: 40px; text-align: left;">
-                            <h1 style="font-size: 34px; color: #ffffff;">${post.title}</h1>
-                            <div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; border-radius: 4px; margin-top: 20px; color: #721c24; font-size: 14px;">
-                                <strong>❌ 404 加载失败：</strong><br>
-                                未找到文件：<code style="background:#eee; padding:2px 4px;">${mdUrl}</code>
-                            </div>
-                        </div>
-                    `;
-                });
-
-        } catch (error) {
-            console.error('系统发生致命错误:', error);
-        }
+        });
     }
 
-    loadCategoriesData();
+    // ==========================================================
+    // 【直接加载首页】
+    // ==========================================================
+    loadModule("home");
 })();

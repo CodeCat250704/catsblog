@@ -1,22 +1,27 @@
 {
   "announcements": [
-    "2026.07.23 - 毛玻璃正式上线",
-    "2026.07.23 - 测试上线",
+    "2026.07.20 - 毛玻璃正式上线",
+    "2026.07.20 - 测试上线",
     "2026.07.24 - 第一篇博客上传——Apple液态玻璃，教程来喽",
     "2026.07.25 - 修复markdown预览问题（Gqun）",
     "2026.07.25 - 发布Github26H3，完成DucksBlog数据备份迁移，但是没有上传Github。（Gqun）",
     "2026.07.25 - 修复杜比全景声声音环绕问题（AI DeepSeek）",
     "2026.07.25 - 修复夜间模式文字预览问题（Cat）",
     "2026.07.25 - 上传音乐，重构book数据存储文件夹（Cat）",
-    "2026.07.26 - 上传博客，关于鸿蒙的看法（一）（Cat）"
-
+    "2026.07.26 - 上传博客，关于鸿蒙的看法（一）（Cat）",
+    "2026.07.26 - 接下来我们启动26H4开发，预计下周上线，从今天到上线博客不在更新，但是投稿，纠错不暂停。9月之后投稿审核周期为14天以，因为大家都知道的原因。（Cat）",
+    "2026.07.26 - 欢迎CodeSandwich加入CatBlog开发团队。（Cat）",
+    "2026.07.27 - 26H4全新升级，全新发布(ALL)"
   ],
   "music": [
     "The King.mp3",
     "游京.mp3",
     "Call Me Now.mp3",
     "Go Again.aac",
-    "Drown (feat. Clinton Kane).mp3"
+    "Drown (feat. Clinton Kane).mp3",
+    "Move Your Body (Alan Walker Remix).mp3",
+    "TIRED OF PROBLEMS (Explicit) - NUEKI&TOLCHONOV&Glichery.aac"
+
 
   ],
 

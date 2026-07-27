@@ -3,7 +3,7 @@
 
     async function loadNotices() {
         try {
-            // 读取指定路径：/book/information/notice.json
+            // 【同步升级】：读取独立的 /book/information/notice.json
             const response = await fetch('/book/information/notice.json');
             if (!response.ok) throw new Error(`读取失败: ${response.status}`);
             const data = await response.json();
@@ -20,8 +20,10 @@
                 return;
             }
 
-            // 遍历并渲染卡片（模仿主页列表结构）
+            // 循环渲染卡片（排除掉 first 消息，因为首页已显示弹窗）
             data.forEach(notice => {
+                if (notice.first) return; // 如果标记了 first，在通知列表里不重复显示
+
                 const card = document.createElement('div');
                 card.className = 'notice-card glass-panel';
                 
