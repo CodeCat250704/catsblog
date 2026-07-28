@@ -1,41 +1,74 @@
+/*页面核心CSS
+  修改者：Cat
+  修改内容：创建机制
+*/
 
- // 核心布局圆角 玻璃 深色蓝边
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', -apple-system, sans-serif; }
-body { overflow: hidden; height: 100vh; color: #ffffff; background: #0f172a; }
+
+/* 核心布局      圆角 玻璃    深色蓝边*/
+* { 
+    margin: 0; 
+    padding: 0;
+    box-sizing: border-box; 
+    font-family: 'Segoe UI', -apple-system, sans-serif; 
+}
+
+body { 
+    overflow: hidden; 
+    height: 100vh; 
+    color: #ffffff; 
+    background: #0f172a; 
+}
+
+
 
 /* 背景图 */
 .background-layer {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
     background: url('../background.jpeg') no-repeat center center / cover;
     z-index: -1;
     transition: filter 0.4s ease;
 }
 
+
+
+
 /* 主容器 */
 #app-container {
     height: calc(100vh - 90px);
-    padding: 15px; box-sizing: border-box;
+    padding: 15px; 
+    box-sizing: border-box;
 }
 
 /* 内容主区域 */
 .content-area {
     width: 100%; height: 100%;
-    padding: 0; /* 彻底去除边距 */
+    padding: 0; /* 去除边距 */
     overflow: hidden; display: flex; flex-direction: column;
     position: relative;
-    /* 移除边框、阴影、背景色和圆角 */
+    /* 去除边框、阴影、背景色和圆角 */
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
 }
-.content-area::-webkit-scrollbar { width: 6px; }
-.content-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+.content-area::-webkit-scrollbar { 
+    width: 6px; 
+}
+
+.content-area::-webkit-scrollbar-thumb { 
+    background: rgba(255,255,255,0.2); 
+    border-radius: 10px; 
+}
 
 
-/* ==========================================================
- * 【Win11 风格底部任务栏 (完美居中对齐版)】
- * ========================================================== */
+
+
+/* 底部任务栏 */
 #taskbar {
     position: fixed;
     bottom: 15px; left: 15px; right: 15px;
@@ -46,7 +79,7 @@ body { overflow: hidden; height: 100vh; color: #ffffff; background: #0f172a; }
     border-radius: 12px;
     display: flex;
     justify-content: space-between;
-    align-items: center; /* 绝对垂直居中 */
+    align-items: center; /* 垂直居中 */
     padding: 0 15px;
     z-index: 9999;
 }
@@ -61,8 +94,8 @@ body { overflow: hidden; height: 100vh; color: #ffffff; background: #0f172a; }
 /* 中间导航区 */
 .taskbar-center {
     display: flex;
-    align-items: center; /* 绝对垂直居中 */
-    gap: 2px; /* 缩小间距，保持紧凑 */
+    align-items: center; /* 垂直居中 */
+    gap: 2px;
 }
 
 /* 单个导航按钮 */
@@ -76,19 +109,33 @@ body { overflow: hidden; height: 100vh; color: #ffffff; background: #0f172a; }
     cursor: pointer;
     color: rgba(255, 255, 255, 0.6);
     transition: all 0.2s ease;
-    height: 44px; /* 固定高度，防止错位 */
+    height: 44px; 
     min-width: 44px;
 }
-.taskbar-item i { font-size: 16px; margin-bottom: 2px; }
-.taskbar-item span { font-size: 11px; font-weight: 500; line-height: 1; }
-.taskbar-item:hover { color: #ffffff; background: rgba(255, 255, 255, 0.1); }
+
+.taskbar-item i { 
+    font-size: 16px; 
+    margin-bottom: 2px; 
+}
+
+.taskbar-item span { 
+    font-size: 11px; 
+    font-weight: 500;
+    line-height: 1; 
+}
+
+.taskbar-item:hover { 
+    color: #ffffff; 
+    background: rgba(255, 255, 255, 0.1); 
+}
+
 .taskbar-item.active {
     color: #ffffff;
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* 右侧音量与设置 */
+/* 音量与设置 */
 .taskbar-right {
     display: flex;
     align-items: center;
@@ -132,10 +179,19 @@ body { overflow: hidden; height: 100vh; color: #ffffff; background: #0f172a; }
     font-size: 14px;
     transition: 0.2s;
 }
-.taskbar-settings:hover { color: #ffffff; background: rgba(255, 255, 255, 0.1); }
-.taskbar-settings i { font-size: 16px; }
 
-/* 手机端响应式调整 */
+.taskbar-settings:hover { 
+    color: #ffffff; 
+    background: rgba(255, 255, 255, 0.1); 
+}
+
+.taskbar-settings i { 
+    font-size: 16px; 
+}
+
+
+
+/* 手机响应式调整 */
 @media (max-width: 600px) {
     #taskbar { height: 48px; padding: 0 10px; }
     .taskbar-left { display: none; }
@@ -147,89 +203,101 @@ body { overflow: hidden; height: 100vh; color: #ffffff; background: #0f172a; }
     .taskbar-settings span { display: none; }
 }
 
-//深色模式，强制把模块内所有文字变成白字
+/*深色模式，强制把模块内所有文字变成白字*/
 body.dark-theme .settings-module *,
+
 body.dark-theme .notice-module *,
+
 body.dark-theme .co-create-module *,
+
 body.dark-theme .about-module * {
     color: #ffffff !important;
 }
 
-/* 保留元数据和次要信息的半透明灰（防止太过刺眼） */
+/* 保留元数据，次要信息的半透明灰 */
 body.dark-theme .settings-module .settings-sub-title,
+
 body.dark-theme .settings-module .range-label,
+
 body.dark-theme .notice-module .notice-date,
+
 body.dark-theme .co-create-module .co-person .role,
+
 body.dark-theme .co-create-module .co-description {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
-/* 确保深色模式下，这几个模块的卡片边缘拥有统一的蓝边 */
+/* 深色模式统一蓝边 */
 body.dark-theme .settings-card,
+
 body.dark-theme .notice-card,
+
 body.dark-theme .co-create-card,
+
 body.dark-theme .about-card,
+
 body.dark-theme .page-header.glass-panel {
     border-color: #4F9CF7 !important;
     background: rgba(0, 0, 0, 0.6) !important;
 }
 
-/* 修正设置页面的开关和滑块 (让它们也拥有蓝边和玻璃感) */
+/* 设置开关和滑块 */
 body.dark-theme .border-toggle-switch {
     border-color: #4F9CF7 !important;
     background: rgba(79, 156, 247, 0.1) !important;
 }
+
 body.dark-theme #blurSlider {
     background: rgba(79, 156, 247, 0.4) !important;
 }
 
 
+/*Bug预防
+  修改者：Cat
+  修改内容：创建机制
+*/
 
-
-
-
-//取消外框后可能出现的黑字隐形问题
-
+/*取消外框后可能出现的黑字隐形问题*/
 body.dark-theme .settings-module,
+
 body.dark-theme .notice-module,
+
 body.dark-theme .co-create-module,
+
 body.dark-theme .about-module {
-    /* 为深色模式下的内部模块补上深色背景，防止文字变黑 */
     background: rgba(10, 10, 20, 0.4) !important;
     border-radius: 16px;
 }
+
 body.dark-theme .settings-module *,
+
 body.dark-theme .notice-module *,
+
 body.dark-theme .co-create-module *,
+
 body.dark-theme .about-module * {
     color: #ffffff !important;
 }
+
 body.dark-theme .settings-module .settings-sub-title,
+
 body.dark-theme .settings-module .range-label,
+
 body.dark-theme .notice-module .notice-date {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
-
-
-/* ==========================================================
- * 【全局字体与颜色修正补丁】
- * 适用场景：修正过小的字号，调整刺眼的纯白
- * ========================================================== */
-
-/* 1. 全局调整字号：强制小于 15px 的文字变大，且避免 3D 缩放模糊 */
-/* 使用 !important 确保能覆盖模块内部定死的值 */
+/* 全局调整字号小于15px的文字变大 */
 .glass-panel p, 
 .glass-panel li, 
 .glass-panel span, 
 .glass-panel div:not([class*="player"]):not([class*="progress"]) { 
     font-size: 15px !important; 
-    /* 修复由于 3D 倾斜导致的字体边缘发虚 */
+    /* 修复由于3D倾斜导致的字体边缘发虚 */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* 2. 全局文字颜色：从“刺眼纯白”改成“暖白/柔白”，更护眼 */
 /* 覆盖所有任务栏、菜单、列表、卡片正文的颜色 */
 .nav-links li, 
 .taskbar-item span, 
@@ -243,10 +311,10 @@ body.dark-theme .notice-module .notice-date {
 .settings-sub-title,
 .col-title,
 .tab-item {
-    color: rgba(255, 255, 255, 0.88) !important; /* 纯白 0.88 偏一点点灰，护眼 */
+    color: rgba(255, 255, 255, 0.88) !important; 
 }
 
-/* 3. 对激活状态和需要特别强调的文字保持纯白，不影响视觉重点 */
+/* 特别强调的文字保持纯白，不影响视觉重点 */
 .taskbar-item.active, 
 .taskbar-item.active span, 
 .taskbar-item.active i,

@@ -1,11 +1,12 @@
-/* ==========================================================
- * 【纯净 SPA 路由引擎】
- * ========================================================== */
+/*路由引擎     非请勿动，重要文件！-非请勿动，重要文件！
+  修改者：CodeSandwich
+  修改内容：26H4重写
+*/
 
 (function() {
     "use strict";
 
-    // 1. 实时时钟
+    // 时钟
     function updateClock() {
         var now = new Date();
         var days = ["周日","周一","周二","周三","周四","周五","周六"];
@@ -17,7 +18,7 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    // 2. 全局音量控制
+    // 全局音量控制
     var volSlider = document.getElementById("global-volume-slider");
     var volIcon = document.getElementById("vol-icon");
     function applyVolume(val) {
@@ -34,7 +35,7 @@
         setTimeout(function() { applyVolume(volSlider.value); }, 500);
     }
 
-    // 3. 核心路由系统
+    // 核心路由
     var MODULES = {
         "home": "/modules/home/",
         "categories": "/modules/categories/",
@@ -93,6 +94,6 @@
         });
     }
 
-    // 直接加载首页
+    // 首页加载
     loadModule("home");
 })();

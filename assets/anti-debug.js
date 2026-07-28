@@ -1,36 +1,37 @@
-/* ==========================================================
- * 【反调试爆头防御系统】
- * 原理：检测窗口内、外宽高差异。
- * 一旦用户打开开发者工具 (F12/右键检查等)，窗口尺寸变化会瞬间触发跳转。
- * ========================================================== */
+/*源代码防盗模块
+  修改者：CodeSandwich
+  修改内容：创建机制
+*/
 
-(function() {
-    "use strict";
 
-    // 报警阈值：当浏览器外部高度与内部高度的差值超过 160 像素时，判定为打开了开发者工具。
-    // 注意：Mac/Windows 浏览器边框厚度不同，阈值设置为 160 是安全的临界点。
-    var THRESHOLD = 160;
+// 防止调试：尺寸差异过大时跳转
+const TARGET = 'https://www.apple.com';
+const LIMIT = 160; // 阈值，参考 DevTools 默认侧边栏宽度
 
-    // 目标跳转地址 (苹果官网)
-    var TARGET_URL = "https://www.apple.com";
+function detectDevTools() {
+  const w = window.outerWidth - window.innerWidth;
+  const h = window.outerHeight - window.innerHeight;
+  
+  if (w > LIMIT || h > LIMIT) {
+    // 清空页面再跳转，避免内容被捕获
+    document.body.innerHTML = '';
+    window.location.replace(TARGET);
+  }
+}
 
-    function antiDebugCheck() {
-        try {
-            var widthDiff = window.outerWidth - window.innerWidth;
-            var heightDiff = window.outerHeight - window.innerHeight;
+// 使用 setTimeout 递归代替 setInterval，避免堆积，也更省资源
+let timer;
+function loop() {
+  detectDevTools();
+  timer = setTimeout(loop, 500 + Math.floor(Math.random() * 100)); // 加入随机抖动，更像人工节奏
+}
+loop();
 
-            // 一旦发现尺寸差异过大，触发爆头跳转
-            if (widthDiff > THRESHOLD || heightDiff > THRESHOLD) {
-                // 在执行跳转前，先把当前页面清空，防止数据在跳转瞬间被截取
-                document.documentElement.innerHTML = '';
-                // 强制跳转至苹果官网，且无法后退
-                window.location.replace(TARGET_URL);
-            }
-        } catch (e) {
-            // 如果有人在控制台试图阻断监测，我们什么也不做，保持静默运行。
-        }
-    }
-
-    // 以最高频率进行监测（每 500 毫秒一次），不给调试者留下任何喘息的时间
-    setInterval(antiDebugCheck, 500);
-})();
+// 如果页面隐藏（切换标签）时暂停检测，节省性能（人类常会考虑）
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    clearTimeout(timer);
+  } else {
+    loop();
+  }
+});
